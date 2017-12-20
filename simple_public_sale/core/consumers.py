@@ -11,6 +11,7 @@ def ws_connect(message, room_name):
     # Accept connection
 
     message.reply_channel.send({"accept": True})
+    
     # Parse the query string
     params = parse_qs(message.content["query_string"])
     #Params receives a GET query with url.com/?username=yourUserName
@@ -18,7 +19,7 @@ def ws_connect(message, room_name):
         # Set the username in the session
         message.channel_session["username"] = params[b"username"][0].decode("utf8")
         # Add the user to the room_name group
-        Group("chat-%s" % room_name).add(message.reply_channel)
+        Group("chat").add(message.reply_channel)
     else:
         # Close the connection.
         message.reply_channel.send({"close": True})
@@ -26,7 +27,7 @@ def ws_connect(message, room_name):
 # Connected to websocket.receive
 @channel_session
 def ws_message(message, room_name):
-    Group("chat-%s" % room_name).send({
+    Group("chat").send({
         "text": json.dumps({
             "text": message["text"],
             "username": message.channel_session["username"],
@@ -36,7 +37,7 @@ def ws_message(message, room_name):
 # Connected to websocket.disconnect
 @channel_session
 def ws_disconnect(message, room_name):
-    Group("chat-%s" % room_name).discard(message.reply_channel)
+    Group("chat").discard(message.reply_channel)
 # from django.http import HttpResponse
 # from channels.handler import AsgiHandler
 #
@@ -52,14 +53,14 @@ def ws_disconnect(message, room_name):
 # # In consumers.py
 # from channels import Group, Channel
 #
-# def msg_consumer(message):
-#     # Save to model
-#
-#
-#     # Broadcast to listening sockets
-#     Group("chat").send({
-#         "text": message.content['message'],
-#     })
+def msg_consumer(message):
+    # Save to model
+
+    print(message.content.get('message'))
+    # Broadcast to listening sockets
+    Group("chat").send({
+        "text": message.content['message'],
+    })
 # # Connected to websocket.connect
 # def ws_add(message):
 #     # Accept the incoming connection

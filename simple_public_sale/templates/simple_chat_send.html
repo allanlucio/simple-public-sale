@@ -14,7 +14,7 @@
 <script>
     socket = new WebSocket("ws://" + window.location.host + "/chat/?username=allan");
 socket.onmessage = function(e) {
-    alert(e.data);
+    console.log(e.data);
 }
 socket.onopen = function() {
     socket.send("hello world");
