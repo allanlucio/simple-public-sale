@@ -7,8 +7,6 @@ def send_message(request):
     if request.method == 'POST':
 
         message=request.POST.get('message')
-
-
         a=Channel("chat-messages").send({'message': message},immediately=True)
 
     return render(request,'simple_chat_send.html')
