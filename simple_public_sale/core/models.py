@@ -1,5 +1,8 @@
 from django.db import models
 
+from channels_core.models import GrupoEvento
+
+
 class Doador(models.Model):
     nome_doador = models.CharField(max_length=100)
     apelido_doador = models.CharField(max_length=100)
@@ -9,6 +12,7 @@ class Evento(models.Model):
     nome_evento = models.CharField(max_length=100)
     data_evento = models.DateField()
     url_image = models.ImageField(upload_to='arquivos/imagens')
+    grupo = models.OneToOneField(GrupoEvento, null=True, blank=True, on_delete=models.CASCADE)
     
 class TipoPrenda(models.Model):
     descricao = models.CharField(max_length=100)
