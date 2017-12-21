@@ -6,6 +6,9 @@ from channels.sessions import channel_session
 from urllib.parse import parse_qs
 
 # Connected to websocket.connect
+from channels_core.models import GrupoEvento
+
+
 @channel_session
 def ws_connect(message, room_name):
     # Accept connection
@@ -15,11 +18,20 @@ def ws_connect(message, room_name):
     # Parse the query string
     params = parse_qs(message.content["query_string"])
     #Params receives a GET query with url.com/?username=yourUserName
-    if b"username" in params:
+    if b"username" in params and b"group_id" in params:
         # Set the username in the session
         message.channel_session["username"] = params[b"username"][0].decode("utf8")
-        # Add the user to the room_name group
-        Group("chat").add(message.reply_channel)
+        group_id=params[b"group_id"][0].decode("utf8")
+        grupo_evento=GrupoEvento.objects.get(pk=group_id)
+        if(grupo_evento.online):
+            Group("chat").add(message.reply_channel)
+            message.reply_channel.send({"text":"Conectado"})
+        else:
+            message.reply_channel.send({"text":"Evento offline"})
+            message.reply_channel.send({"close": True})
+
+
+
     else:
         # Close the connection.
         message.reply_channel.send({"close": True})

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>Eventos</h1>
+    {% for evento in eventos %}
+        {{ forloop.counter }} - {{ evento.nome_evento }} - {{ evento.grupo.nome }} -
+        <button onclick="openWebSocket('Allan','{{ evento.grupo.id }}');">Conectar</button>
+        <br>
+    {% endfor %}
+
+<script>
+    function openWebSocket(username,group_id){
+       socket = new WebSocket("ws://" + window.location.host + "/chat/?username="+username+"&group_id="+group_id);
+       socket.onmessage = function(e) {
+           console.log(e.data);
+    };
+        socket.onopen = function() {
+        socket.send("hello world");
+    };
+        // Call onopen directly if socket is already open
+        if (socket.readyState == WebSocket.OPEN) socket.onopen();
+    }
+
+
+</script>
+</body>
+</html>
