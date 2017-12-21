@@ -24,7 +24,7 @@ def ws_connect(message, room_name):
         group_id=params[b"group_id"][0].decode("utf8")
         grupo_evento=GrupoEvento.objects.get(pk=group_id)
         if(grupo_evento.online):
-            Group("chat").add(message.reply_channel)
+            Group(group_id).add(message.reply_channel)
             message.reply_channel.send({"text":"Conectado"})
         else:
             message.reply_channel.send({"text":"Evento offline"})
