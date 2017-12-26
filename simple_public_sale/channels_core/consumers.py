@@ -23,10 +23,12 @@ def ws_connect(message, room_name):
         # Set the username in the session
         message.channel_session["username"] = params[b"username"][0].decode("utf8")
         group_id=params[b"group_id"][0].decode("utf8")
+
         grupo_evento=GrupoEvento.objects.get(pk=group_id)
         if(grupo_evento.online):
             Group(group_id).add(message.reply_channel)
             message.reply_channel.send({"text":"Conectado"})
+
         else:
             message.reply_channel.send({"text":"Evento offline"})
             message.reply_channel.send({"close": True})
@@ -38,42 +40,33 @@ def ws_connect(message, room_name):
         message.reply_channel.send({"close": True})
 
 # Connected to websocket.receive
-# @channel_session
-# def ws_message(message, room_name):
-#     Group("chat").send({
-#         "text": json.dumps({
-#             "text": message["text"],
-#             "username": message.channel_session["username"],
-#         }),
-#     })
+@channel_session
+def ws_message(message, room_name):
+    Group("1a674718-166a-4b57-8e14-462cb331a13c").send({
+        "text": json.dumps({
+            "text": message["text"],
+            "username": message.channel_session["username"],
+        }),
+    })
 
 # Connected to websocket.disconnect
 @channel_session
 def ws_disconnect(message, room_name):
     Group("chat").discard(message.reply_channel)
-# from django.http import HttpResponse
-# from channels.handler import AsgiHandler
+
 #
-# def http_consumer(message):
-#     # Make standard HTTP response - access ASGI path attribute directly
-#     response = HttpResponse("Hello world! You asked for %s" % message.content['path'])
-#     # Encode that response into message format (ASGI)
-#     for chunk in AsgiHandler.encode_response(response):
-#         message.reply_channel.send(chunk)
-#
-#
-#
-# # In consumers.py
-# from channels import Group, Channel
-#
+
 def msg_consumer(message):
     # Save to model
 
-    print(message.content.get('message'))
-    # Broadcast to listening sockets
-    Group("chat").send({
-        "text": message.content['message'],
-    })
+    message=message.content.get('message')
+    grupo=message.get('group_id')
+    print('enviando para: %s' % grupo)
+
+    g=Group(grupo).send({
+        "text": json.dumps(message),
+    },immediately=True)
+    print(g)
 # # Connected to websocket.connect
 # def ws_add(message):
 #     # Accept the incoming connection

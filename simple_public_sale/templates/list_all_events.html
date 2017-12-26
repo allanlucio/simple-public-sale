@@ -8,7 +8,8 @@
     <h1>Eventos</h1>
     {% for evento in eventos %}
         {{ forloop.counter }} - {{ evento.nome_evento }} - {{ evento.grupo.nome }} - {{ evento.id }}
-        <a href="{% url 'watch-event' evento.grupo.id %}">Conectar</a>
+        <a href="{% url 'watch-event' evento.grupo.id %}">Assistir</a>
+        <a href="{% url 'manage-event' evento.id %}">Gerenciar</a>
         <br>
     {% endfor %}
 

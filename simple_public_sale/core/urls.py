@@ -24,6 +24,7 @@ urlpatterns = [
 
     path('send-message/', send_message),
     path('list/events', list_all_events),
-    re_path('watch/event/(?P<evento_id>.+)', watch_event, name='watch-event'),
+    re_path('watch/event/(?P<group_id>.+)', watch_event, name='watch-event'),
+    re_path('manage/event/(?P<evento_id>.+)', manage_event, name='manage-event'),
 
-]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]

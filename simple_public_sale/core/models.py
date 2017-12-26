@@ -11,7 +11,7 @@ class Doador(models.Model):
 class Evento(models.Model):
     nome_evento = models.CharField(max_length=100)
     data_evento = models.DateField()
-    url_image = models.ImageField(upload_to='arquivos/imagens')
+    url_image = models.ImageField(upload_to='imagens')
     grupo = models.OneToOneField(GrupoEvento, null=True, blank=True, on_delete=models.CASCADE)
     
 class TipoPrenda(models.Model):
@@ -22,7 +22,8 @@ class Prenda(models.Model):
     valor_inicial = models.DecimalField(decimal_places=2, max_digits=4)
     tipo_prenda_fk = models.ForeignKey(TipoPrenda, on_delete=models.CASCADE)
     evento_fk = models.ForeignKey(Evento, on_delete=models.CASCADE)
-    movimento_fk = models.OneToOneField('Movimento', on_delete=models.CASCADE)
+    arrematada = models.BooleanField(default=False)
+
     
 class Arrematador(models.Model):
     nome_arrematador = models.CharField(max_length=100)
@@ -34,3 +35,4 @@ class Movimento(models.Model):
     data_movimento = models.DateField()
     arrematador_fk = models.ForeignKey(Arrematador, on_delete=models.CASCADE)
     valor_arremate = models.DecimalField(decimal_places=2, max_digits=4)
+    prenda_fk = models.ForeignKey('Prenda', on_delete=models.CASCADE)
