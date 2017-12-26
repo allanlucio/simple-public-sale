@@ -4,7 +4,7 @@ import json
 from channels import Group
 from channels.sessions import channel_session
 from urllib.parse import parse_qs
-
+from django.core.cache import cache
 # Connected to websocket.connect
 from channels_core.models import GrupoEvento
 
@@ -27,7 +27,8 @@ def ws_connect(message, room_name):
         grupo_evento=GrupoEvento.objects.get(pk=group_id)
         if(grupo_evento.online):
             Group(group_id).add(message.reply_channel)
-            message.reply_channel.send({"text":"Conectado"})
+            data=cache.get('last-event-%s'%group_id)
+            message.reply_channel.send({"text":data})
 
         else:
             message.reply_channel.send({"text":"Evento offline"})
@@ -61,6 +62,7 @@ def msg_consumer(message):
 
     message=message.content.get('message')
     grupo=message.get('group_id')
+    cache.set('last-event-%s'%grupo, json.dumps(message))
     print('enviando para: %s' % grupo)
 
     g=Group(grupo).send({
