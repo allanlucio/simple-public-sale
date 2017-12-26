@@ -5,15 +5,12 @@
     <title>Title</title>
 </head>
 <body>
-    <h1>Eventos</h1>
-    {% for evento in eventos %}
-        {{ forloop.counter }} - {{ evento.nome_evento }} - {{ evento.grupo.nome }} - {{ evento.id }}
-        <a href="{% url 'watch-event' evento.grupo.id %}">Conectar</a>
-        <br>
-    {% endfor %}
+    <h1>Evento</h1> {{ grupo.nome_evento }}
+    <button onclick="openWebSocket('allan','{{ grupo.pk }}')">Play</button>
 
 <script>
     function openWebSocket(username,group_id){
+        console.log(username,group_id);
        socket = new WebSocket("ws://" + window.location.host + "/chat/?username="+username+"&group_id="+group_id);
        socket.onmessage = function(e) {
            console.log(e.data);
