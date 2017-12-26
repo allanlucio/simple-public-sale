@@ -1,8 +1,8 @@
 from channels import Channel
 from django.core import serializers
-
+from django.core.cache import cache
 from django.shortcuts import render
-
+import json
 # Create your views here.
 from channels_core.models import GrupoEvento
 from core.models import Evento, Prenda
@@ -12,6 +12,7 @@ def send_message(request):
     if request.method == 'POST':
 
         message=request.POST.get('message')
+
         a=Channel("chat-messages").send({'message': message},immediately=True)
 
     return render(request,'simple_chat_send.html')
@@ -41,5 +42,8 @@ def manage_event(request,evento_id):
         }
 
         a=Channel('chat-messages').send({'message': data},immediately=True)
+
+
+
 
     return render(request,'manage_event.html',{'evento':evento})
