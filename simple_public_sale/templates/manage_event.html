@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>Eventos</h1>
+    {{ evento.nome_evento }} - <img src="{{ evento.url_image.url }}">
+    <br><br><br>
+    prendas***
+    <br><br><br>
+    {% for prenda in evento.prenda_set.all %}
+    {{ forloop.counter }}-{{ prenda.tipo_prenda_fk.descricao }}
+        <form method="post">
+        {% csrf_token %}
+        <input type="text" name="arrematador" placeholder="Arrematador">
+        <input type="number" name="valor" placeholder="valor">
+            <input type="hidden" name="prenda_id" value="{{ prenda.pk }}">
+            <input type="hidden" name="group_id" value="{{ evento.grupo_id }}">
+        <input type="submit">
+        </form>
+        <br>
+    {% endfor %}
+
+</body>
+</html>
