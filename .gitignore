@@ -99,3 +99,21 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+\.idea/misc\.xml
+
+\.idea/modules\.xml
+
+\.idea/simple-public-sale\.iml
+
+\.idea/vcs\.xml
+
+\.idea/workspace\.xml
+
+simple_public_sale/\.idea/misc\.xml
+
+simple_public_sale/\.idea/simple_public_sale\.iml
+
+simple_public_sale/\.idea/workspace\.xml
+
+simple_public_sale/db\.sqlite3
