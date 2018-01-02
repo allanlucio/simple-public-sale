@@ -27,12 +27,12 @@ class Prenda(models.Model):
     
 class Arrematador(models.Model):
     nome_arrematador = models.CharField(max_length=100)
-    cpf_cnpj_arrematador = models.CharField(max_length=14)
-    rg_arrematador = models.CharField(max_length=50)
-    endereco_arrematador = models.CharField(max_length=200)
+    cpf_cnpj_arrematador = models.CharField(max_length=14,null=True,blank=True)
+    rg_arrematador = models.CharField(max_length=50,null=True,blank=True)
+    endereco_arrematador = models.CharField(max_length=200,null=True,blank=True)
     
 class Movimento(models.Model):
-    data_movimento = models.DateField()
+    data_movimento = models.DateField(auto_now=True,editable=False)
     arrematador_fk = models.ForeignKey(Arrematador, on_delete=models.CASCADE)
     valor_arremate = models.DecimalField(decimal_places=2, max_digits=4)
     prenda_fk = models.ForeignKey('Prenda', on_delete=models.CASCADE)

@@ -5,7 +5,7 @@ from django.shortcuts import render
 import json
 # Create your views here.
 from channels_core.models import GrupoEvento
-from core.models import Evento, Prenda
+from core.models import Evento, Prenda, Arrematador, Movimento
 
 
 def send_message(request):
@@ -30,18 +30,30 @@ def manage_event(request,evento_id):
     evento = Evento.objects.get(pk=evento_id)
     if request.method == 'POST':
 
-        arrematador=request.POST.get('arrematador')
+        arrematador_nome=request.POST.get('arrematador')
         valor=request.POST.get('valor')
+        arrematador_id = request.POST.get('arrematador_id')
         prenda_id = request.POST.get('prenda_id')
+        arrematador=Arrematador.objects.filter(pk=arrematador_id)
+        prenda = Prenda.objects.get(pk=prenda_id)
+        if not arrematador:
+            arrematador=Arrematador.objects.create(nome_arrematador=arrematador_nome)
+        movimento=Movimento()
+        movimento.arrematador_fk=arrematador
+        movimento.prenda_fk = prenda
+        movimento.valor_arremate=valor
+        movimento.save()
+
+
         prenda=Prenda.objects.get(pk=prenda_id)
         data={
-            'arrematador': arrematador,
+            'arrematador': arrematador_nome,
             'valor': valor,
             'prenda':serializers.serialize('json', [prenda]),
             'group_id':'%s'%evento.grupo_id
         }
 
-        a=Channel('chat-messages').send({'message': data},immediately=True)
+        a=Channel('send-to-group').send({'message': data},immediately=True)
 
 
 
