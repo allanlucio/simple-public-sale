@@ -1,36 +1,16 @@
-{% extends 'base.html' %}
-{% block content %}
-    <div class="container">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>Eventos</h1>
+    {% for evento in eventos %}
+        {{ forloop.counter }} - {{ evento.nome_evento }} - {{ evento.grupo.nome }} -
+        <button onclick="openWebSocket('Allan','{{ evento.grupo.id }}');">Conectar</button>
         <br>
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="#">Core</a></li>
-              <li class="breadcrumb-item"><a href="#">List</a></li>
-              <li class="breadcrumb-item active"> Events </li>
-            </ol>
-        </nav>
-        <div class="row">
-        {% for evento in eventos %}
-            <div class="col-sm-3">
-                <div class="card">
-
-                <div class="card-body">
-                    <h5 class="card-title"> {{ evento.nome_evento.capitalize }} </h5>
-                    <h6 class="card-subtitle mb-2 text-muted"> {{ evento.data_evento }}</h6>
-                    <a class="card-link" href="{% url 'watch-event' evento.grupo.id %}">Assistir</a>
-                    <a class="card-link" href="{% url 'manage-event' evento.id %}">Gerenciar</a>
-                </div>
-            </div>
-
-            </div>
-
-
-        {% endfor %}
-        </div>
-
-    </div>
-
-
+    {% endfor %}
 
 <script>
     function openWebSocket(username,group_id){
@@ -46,7 +26,6 @@
     }
 
 
-
 </script>
-{% endblock %}
-
+</body>
+</html>
