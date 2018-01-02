@@ -7,6 +7,7 @@ from urllib.parse import parse_qs
 from django.core.cache import cache
 # Connected to websocket.connect
 from channels_core.models import GrupoEvento
+from core.utils import cache_last_event_message
 
 
 @channel_session
@@ -62,11 +63,13 @@ def msg_consumer(message):
 
     message=message.content.get('message')
     grupo=message.get('group_id')
-    cache.set('last-event-%s'%grupo, json.dumps(message))
+    cache_last_event_message(grupo=grupo,message=message)
+    message_json=json.dumps(message)
+    cache.set('last-event-%s'%grupo,message_json)
     print('enviando para: %s' % grupo)
 
     g=Group(grupo).send({
-        "text": json.dumps(message),
+        "text": message_json,
     },immediately=True)
     print(g)
 # # Connected to websocket.connect
