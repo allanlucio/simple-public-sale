@@ -11,17 +11,17 @@
         <input type="submit">
     </form>
 
-<script>
-    socket = new WebSocket("ws://" + window.location.host + "/chat/?username=allan");
-socket.onmessage = function(e) {
-    console.log(e.data);
-}
-socket.onopen = function() {
-    socket.send("hello world");
-}
-// Call onopen directly if socket is already open
-if (socket.readyState == WebSocket.OPEN) socket.onopen();
-
-</script>
+{#<script>#}
+{#    socket = new WebSocket("ws://" + window.location.host + "/chat/?username=allan");#}
+{#socket.onmessage = function(e) {#}
+{#    console.log(e.data);#}
+{#}#}
+{#socket.onopen = function() {#}
+{#    socket.send("hello world");#}
+{#}#}
+{#// Call onopen directly if socket is already open#}
+{#if (socket.readyState == WebSocket.OPEN) socket.onopen();#}
+{##}
+{#</script>#}
 </body>
 </html>

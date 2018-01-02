@@ -100,6 +100,9 @@ ENV/
 # mypy
 .mypy_cache/
 
+
+\.idea/
+simple_public_sale/.idea/
 \.idea/misc\.xml
 
 \.idea/modules\.xml
@@ -117,3 +120,4 @@ simple_public_sale/\.idea/simple_public_sale\.iml
 simple_public_sale/\.idea/workspace\.xml
 
 simple_public_sale/db\.sqlite3
+
