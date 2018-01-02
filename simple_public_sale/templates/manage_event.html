@@ -1,27 +1,78 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-    <h1>Eventos</h1>
-    {{ evento.nome_evento }} - <img src="{{ evento.url_image.url }}">
-    <br><br><br>
-    prendas***
-    <br><br><br>
-    {% for prenda in evento.prenda_set.all %}
-    {{ forloop.counter }}-{{ prenda.tipo_prenda_fk.descricao }}
-        <form method="post">
-        {% csrf_token %}
-        <input type="text" name="arrematador" placeholder="Arrematador">
-        <input type="number" name="valor" placeholder="valor">
-            <input type="hidden" name="prenda_id" value="{{ prenda.pk }}">
-            <input type="hidden" name="group_id" value="{{ evento.grupo_id }}">
-        <input type="submit">
-        </form>
-        <br>
-    {% endfor %}
+{% include 'base.html' %}
+{% block content %}
 
-</body>
-</html>
+    <div class="container">
+        <br>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="#">Core</a></li>
+              <li class="breadcrumb-item"><a href="#">Events</a></li>
+              <li class="breadcrumb-item active">{{ evento.nome_evento }}</li>
+            </ol>
+        </nav>
+
+
+
+
+
+        <h4>Prendas</h4>
+
+
+        <!-- List group -->
+
+        <div id="accordion" role="tablist">
+            {% for prenda in evento.prenda_set.all %}
+                <div class="card">
+                    <div class="card-header" role="tab" id="heading_{{ forloop.counter }}">
+                        <h5 class="mb-0">
+                            <a data-toggle="collapse" href="#id_prenda_{{ forloop.counter }}" role="button"
+                               aria-expanded="true"
+                               aria-controls="collapseOne">
+                                {{ prenda.tipo_prenda_fk.descricao }}
+                            </a>
+                        </h5>
+                    </div>
+
+                    <div id="id_prenda_{{ forloop.counter }}" class="collapse" role="tabpanel"
+                         aria-labelledby="headingOne"
+                         data-parent="#accordion">
+                        <div class="card-body">
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="row">
+
+                                    <div class="col-sm">
+                                        <div class="form-group">
+                                            <label>Arrematador</label>
+                                            <input type="text" name="arrematador" class="form-control">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm">
+                                        <div class="form-group">
+                                            <label>Valor</label>
+                                            <input name="valor" type="number" class="form-control">
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <input type="hidden" name="prenda_id" value="{{ prenda.pk }}">
+                                <input type="hidden" name="group_id" value="{{ evento.grupo_id }}">
+
+                                <button type="submit" class="btn btn-primary">Enviar</button>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+{% endblock %}
