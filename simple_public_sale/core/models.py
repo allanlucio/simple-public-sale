@@ -16,7 +16,7 @@ class Evento(models.Model):
     
 class TipoPrenda(models.Model):
     descricao = models.CharField(max_length=100)
-
+    url_image = models.ImageField(upload_to='tipos/imagens',null=True,blank=True)
 class Prenda(models.Model):
     doador_fk = models.ForeignKey(Doador, on_delete=models.CASCADE)
     valor_inicial = models.DecimalField(decimal_places=2, max_digits=4)
@@ -26,7 +26,7 @@ class Prenda(models.Model):
 
     
 class Arrematador(models.Model):
-    nome_arrematador = models.CharField(max_length=100)
+    nome_arrematador = models.CharField(max_length=100,unique=True,db_index=True)
     cpf_cnpj_arrematador = models.CharField(max_length=14,null=True,blank=True)
     rg_arrematador = models.CharField(max_length=50,null=True,blank=True)
     endereco_arrematador = models.CharField(max_length=200,null=True,blank=True)

@@ -6,6 +6,7 @@ import json
 # Create your views here.
 from channels_core.models import GrupoEvento
 from core.models import Evento, Prenda, Arrematador, Movimento
+from core.utils import get_data_stream_view, send_to_evento
 
 
 def send_message(request):
@@ -32,28 +33,20 @@ def manage_event(request,evento_id):
 
         arrematador_nome=request.POST.get('arrematador')
         valor=request.POST.get('valor')
-        arrematador_id = request.POST.get('arrematador_id')
+
         prenda_id = request.POST.get('prenda_id')
-        arrematador=Arrematador.objects.filter(pk=arrematador_id)
-        prenda = Prenda.objects.get(pk=prenda_id)
-        if not arrematador:
-            arrematador=Arrematador.objects.create(nome_arrematador=arrematador_nome)
-        movimento=Movimento()
-        movimento.arrematador_fk=arrematador
-        movimento.prenda_fk = prenda
-        movimento.valor_arremate=valor
+
+        prenda = Prenda.objects.get(pk=prenda_id, evento_fk=evento)
+
+        arrematador=Arrematador.objects.get_or_create(nome_arrematador=arrematador_nome)[0]
+
+        movimento=Movimento(arrematador_fk=arrematador,prenda_fk=prenda,valor_arremate=valor)
         movimento.save()
 
+        send_to_evento(evento=evento)
+        # data=get_data_stream_view(evento)
 
-        prenda=Prenda.objects.get(pk=prenda_id)
-        data={
-            'arrematador': arrematador_nome,
-            'valor': valor,
-            'prenda':serializers.serialize('json', [prenda]),
-            'group_id':'%s'%evento.grupo_id
-        }
-
-        a=Channel('send-to-group').send({'message': data},immediately=True)
+        # a=Channel('send-to-group').send({'message': data},immediately=True)
 
 
 
