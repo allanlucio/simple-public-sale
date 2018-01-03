@@ -40,6 +40,6 @@ def cache_last_event_message(grupo,message,time=0):
     except:
         message_json=json.dumps(message)
 
-    cache.set('last-event-%s' % grupo, json.dumps(message))
+    cache.set('last-event-%s' % grupo, json.dumps(message),timeout=None)
 
     return True

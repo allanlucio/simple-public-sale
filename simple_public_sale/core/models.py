@@ -21,6 +21,7 @@ class Evento(models.Model):
         return self.grupo.online
     
 class TipoPrenda(models.Model):
+    nome = models.CharField(max_length=100,default='',null=True,blank=True)
     descricao = models.CharField(max_length=100)
     url_image = models.ImageField(upload_to='tipos/imagens',null=True,blank=True)
 
@@ -34,12 +35,15 @@ class Prenda(models.Model):
     tipo_prenda_fk = models.ForeignKey(TipoPrenda, on_delete=models.CASCADE)
     evento_fk = models.ForeignKey(Evento, on_delete=models.CASCADE)
     arrematada = models.BooleanField(default=False)
+    url_image = models.ImageField(upload_to='prendas/imagens', null=True, blank=True)
     caracteristicas = models.ManyToManyField(Caracteristica,through='CaracteristicaPrenda')
 
 class CaracteristicaPrenda(models.Model):
     prenda = models.ForeignKey(Prenda,on_delete=models.CASCADE)
     caracteristica = models.ForeignKey(Caracteristica,on_delete=models.CASCADE)
     valor = models.CharField(max_length=100)
+    class Meta:
+        unique_together=('prenda','caracteristica')
 
 class Arrematador(models.Model):
     nome_arrematador = models.CharField(max_length=100,unique=True,db_index=True)
