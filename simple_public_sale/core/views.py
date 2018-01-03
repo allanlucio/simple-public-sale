@@ -54,7 +54,7 @@ def manage_event(request,evento_id):
                 raise ValidationError("Valor do Arremate menor do que o valor atual!")
             else:
                 movimento.save()
-                send_to_evento(evento=evento)
+                # send_to_evento(evento=evento)
         else:
             if Decimal(movimento.valor_arremate) <= prenda.inicial:
                 raise ValidationError("Valor do Arremate menor do que o valor atual!")
