@@ -65,7 +65,7 @@ def msg_consumer(message):
     grupo=message.get('group_id')
     cache_last_event_message(grupo=grupo,message=message)
     message_json=json.dumps(message)
-    cache.set('last-event-%s'%grupo,message_json)
+    # cache.set('last-event-%s'%grupo,message_json)
     print('enviando para: %s' % grupo)
 
     g=Group(grupo).send({
