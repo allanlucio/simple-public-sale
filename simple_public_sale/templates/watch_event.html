@@ -1,28 +1,148 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-    <h1>Evento</h1> {{ grupo.nome_evento }}
-    <button onclick="openWebSocket('allan','{{ grupo.pk }}')">Play</button>
+{% include 'base.html' %}
 
-<script>
-    function openWebSocket(username,group_id){
-        console.log(username,group_id);
-       socket = new WebSocket("ws://" + window.location.host + "/chat/?username="+username+"&group_id="+group_id);
-       socket.onmessage = function(e) {
-           console.log(e.data);
-    };
-        socket.onopen = function() {
-        socket.send("hello world");
-    };
-        // Call onopen directly if socket is already open
-        if (socket.readyState == WebSocket.OPEN) socket.onopen();
-    }
+{% block content %}
+    <div class="container mt-4">
+
+        <div id="event-info">
+            <div class="text-center">
+                <h3>{{ grupo.evento.nome_evento.capitalize }}</h3>
+
+                <img class="img-thumbnail" src="{{ grupo.evento.url_image.url }}" alt="Foto do evento" width="200px">
+            </div>
+
+            <div class="text-center mt-1">
+                <button type="button" id="btn-play" class="btn-primary btn"
+                        onclick="openWebSocket('allan','{{ grupo.pk }}')">Iniciar Leilão
+                </button>
+            </div>
+        </div>
+
+        <div id="waiting">
+            <div class="text-center">
+                <i class="material-icons" style="font-size: 20rem">query_builder</i>
+                <h1>O leilão iniciará em instantes...</h1>
+            </div>
+
+        </div>
 
 
-</script>
-</body>
-</html>
+        <div id="gift-container" class="text-center" disabled="true">
+
+            <div id="moves-container">
+                <div id="last-move" class="row mt-3">
+                    <div class="card col-md-12 rgba-blue-strong text-light">
+                        <div class="card-body">
+                            <h2 class="float-left">Valor inicial</h2>
+                            <h1 class="float-right text-warning">R$ 999,90</h1>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="move-2" class="row mt-3">
+                    <div class="card col-md-12 text-secondary">
+                        <div class="card-body">
+                            <h2 class="float-left">Nome do arrematador</h2>
+                            <h3 class="float-right">R$ 999,90</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="move-3" class="row mt-3">
+                    <div class="card col-md-12 text-secondary">
+                        <div class="card-body">
+                            <h2 class="float-left">Nome do arrematador</h2>
+                            <h3 class="float-right">R$ 999,90</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-3 py-2 z-depth-1">
+                <div class="carousel slide col-md-4" data-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="item active">
+                            <img id="gift-img" src="http://www.diariodocariri.com/app/uploads/2017/06/01-vaca.jpg"
+                                 alt=""
+                                 class="img-responsive rounded">
+                            <div id="gift-img-caption" class="carousel-caption">
+                                <h3 id="gift-title">Boi Nelore 800Kg</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="attributes" class="col-md-8">
+                    <table class="table">
+
+                        <tr id="caracteristica-1">
+                            <th scope="row">Peso</th>
+                            <td>999,99 Kg</td>
+                        </tr>
+                        <tr id="caracteristica-1">
+                            <th scope="row">Peso</th>
+                            <td>999,99 Kg</td>
+                        </tr>
+                        <tr id="caracteristica-1">
+                            <th scope="row">Peso</th>
+                            <td>999,99 Kg</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <script>
+        function openWebSocket(username, group_id) {
+            console.log(username, group_id);
+            socket = new WebSocket("ws://" + window.location.host + "/chat/?username=" + username + "&group_id=" + group_id);
+            socket.onmessage = function (e) {
+                json = $.parseJSON(e.data);
+                console.log($("#gift-title"));
+                start_event(json);
+
+                console.log($.parseJSON(e.data));
+            };
+            socket.onopen = function () {
+                socket.send("hello world");
+            };
+            // Call onopen directly if socket is already open
+            if (socket.readyState == WebSocket.OPEN) socket.onopen();
+        }
+
+
+    </script>
+
+    <script>
+        $("#btn-play").click(function () {
+            $("#waiting").show();
+            $("#event-info").hide();
+        });
+
+        $(document).ready(function () {
+            $("#waiting").hide()
+            $("#gift-container").hide();
+            $(".carousel").carousel();
+        });
+
+        function start_event(json){
+            $("#waiting").hide();
+            $("#gift-container").show();
+
+            $("#gift-title").text("Boi");
+
+            $("#last-move h2").text(json.arrematador.toString());
+
+            gifts = $.parseJSON(json.prenda.toString());
+            min_value = gifts[0].fields.valor_inicial.toString();
+
+            $("#last-move h1").text("R$ "+json.valor);
+        }
+    </script>
+{% endblock %}

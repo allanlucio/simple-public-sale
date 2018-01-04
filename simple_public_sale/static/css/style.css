@@ -4,3 +4,57 @@
     width: 100%;
 }
 .navbar-brand {float:none;}
+
+#gift-img-caption{
+    background: rgba(0,0,0,0.7);
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    padding: 0.3rem;
+}
+
+#gift-img-caption h3{
+    margin: 0;
+}
+
+#attributes table{
+    min-height: 100%;
+}
+
+#last-move{
+    height: 8rem;
+
+}
+
+img{
+    max-width: 100%
+}
+
+/* Set up material icons */
+@font-face {
+  font-family: 'Material Icons';
+  font-style: normal;
+  font-weight: 400;
+  src: url(../fonts/iconfont/MaterialIcons-Regular.eot); /* For IE6-8 */
+  src: local('Material Icons'),
+    local('MaterialIcons-Regular'),
+    url(../fonts/iconfont/MaterialIcons-Regular.woff2) format('woff2'),
+    url(../fonts/iconfont/MaterialIcons-Regular.woff) format('woff'),
+    url(../fonts/iconfont/MaterialIcons-Regular.ttf) format('truetype');
+}
+
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -moz-font-feature-settings: 'liga';
+  -moz-osx-font-smoothing: grayscale;
+}
