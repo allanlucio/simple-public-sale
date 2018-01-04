@@ -45,10 +45,10 @@ def manage_event(request,evento_id):
         movimento=Movimento(arrematador_fk=arrematador,prenda_fk=prenda,valor_arremate=valor)
 
 
-        movimento_anterior = Movimento.objects.filter(prenda_fk = prenda_id)[0]
+        movimento_anterior = Movimento.objects.filter(prenda_fk = prenda_id)
 
-        if movimento_anterior != None:
-
+        if movimento_anterior:
+            movimento_anterior=movimento_anterior[0]
 
             if Decimal(movimento.valor_arremate) <= movimento_anterior.valor_arremate:
                 raise ValidationError("Valor do Arremate menor do que o valor atual!")
