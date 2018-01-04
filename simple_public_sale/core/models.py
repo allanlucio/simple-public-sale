@@ -31,7 +31,7 @@ class Caracteristica(models.Model):
 
 class Prenda(models.Model):
     doador_fk = models.ForeignKey(Doador, on_delete=models.CASCADE)
-    valor_inicial = models.DecimalField(decimal_places=2, max_digits=4)
+    valor_inicial = models.DecimalField(decimal_places=2, max_digits=8)
     tipo_prenda_fk = models.ForeignKey(TipoPrenda, on_delete=models.CASCADE)
     evento_fk = models.ForeignKey(Evento, on_delete=models.CASCADE)
     arrematada = models.BooleanField(default=False)
@@ -54,7 +54,7 @@ class Arrematador(models.Model):
 class Movimento(models.Model):
     data_movimento = models.DateField(auto_now=True,editable=False)
     arrematador_fk = models.ForeignKey(Arrematador, on_delete=models.CASCADE)
-    valor_arremate = models.DecimalField(decimal_places=2, max_digits=4)
+    valor_arremate = models.DecimalField(decimal_places=2, max_digits=8)
     prenda_fk = models.ForeignKey('Prenda', on_delete=models.CASCADE)
     def send_to_stream(self):
         if self.prenda_fk.evento_fk.is_online():
