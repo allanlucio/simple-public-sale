@@ -26,7 +26,7 @@ def get_data_stream_view(prenda):
     movimento_atual=movimentos.first()
     prenda = movimento_atual.prenda_fk
 
-    movimentos_serialized=serializers.serialize('json',movimentos)
+    movimentos_serialized=serializers.serialize('json',movimentos,use_natural_foreign_keys=True, use_natural_primary_keys=True)
     arrematador_atual_serialized=serializers.serialize('json',[movimento_atual.arrematador_fk])
 
 
