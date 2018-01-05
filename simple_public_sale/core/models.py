@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, IntegrityError
 from django.db.models.signals import pre_save, post_save, post_delete, pre_delete
 from django.dispatch import receiver
 
@@ -91,3 +91,9 @@ def pre_delete_movimento(sender,instance, **kwargs):
 def pre_save_arrematador(sender,instance, **kwargs):
     assert isinstance(instance, Arrematador)
     instance.nome_arrematador=instance.nome_arrematador.upper()
+
+@receiver(pre_save, sender=CaracteristicaPrenda)
+def pre_save_caracteristica_prenda(sender,instance, **kwargs):
+    assert isinstance(instance, CaracteristicaPrenda)
+    if(instance.prenda.caracteristicaprenda_set.count()>=3):
+        raise IntegrityError("Cada prenda tem um limite de 3 caracteristicas.")

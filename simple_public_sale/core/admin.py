@@ -4,6 +4,7 @@ from .models import *
 class CaracteristicaPrendaInline(admin.TabularInline):
     model=CaracteristicaPrenda
     extra = 2
+    max_num = 3
 
 class PrendaAdmin(admin.ModelAdmin):
     inlines = (CaracteristicaPrendaInline,)
