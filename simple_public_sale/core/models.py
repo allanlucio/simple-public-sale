@@ -45,11 +45,20 @@ class CaracteristicaPrenda(models.Model):
     class Meta:
         unique_together=('prenda','caracteristica')
 
+class ArrematadorManager(models.Manager):
+    def get_by_natural_key(self, nome_arrematador):
+        return self.get(nome_arrematador=nome_arrematador)
+
 class Arrematador(models.Model):
     nome_arrematador = models.CharField(max_length=100,unique=True,db_index=True)
     cpf_cnpj_arrematador = models.CharField(max_length=14,null=True,blank=True)
     rg_arrematador = models.CharField(max_length=50,null=True,blank=True)
     endereco_arrematador = models.CharField(max_length=200,null=True,blank=True)
+
+    objects=ArrematadorManager()
+
+    def natural_key(self):
+        return (self.nome_arrematador)
     
 class Movimento(models.Model):
     data_movimento = models.DateField(auto_now=True,editable=False)
@@ -77,3 +86,8 @@ def post_save_movimento(sender,instance, **kwargs):
 def pre_delete_movimento(sender,instance, **kwargs):
     assert isinstance(instance, Movimento)
     instance.send_to_stream()
+
+@receiver(pre_save, sender=Arrematador)
+def pre_save_arrematador(sender,instance, **kwargs):
+    assert isinstance(instance, Arrematador)
+    instance.nome_arrematador=instance.nome_arrematador.upper()
