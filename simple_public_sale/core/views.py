@@ -58,7 +58,7 @@ def manage_event(request,evento_id):
                 # send_to_evento(evento=evento)
         else:
             if Decimal(movimento.valor_arremate) <= prenda.valor_inicial:
-                raise ValidationError("Valor do Arremate menor do que o valor atual!")
+                raise ValidationError("Valor do Arremate menor do que o valor inicial da prenda!")
 
         # data=get_data_stream_view(evento)
 
