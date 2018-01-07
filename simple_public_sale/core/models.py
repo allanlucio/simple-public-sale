@@ -72,12 +72,18 @@ class Arrematador(models.Model):
 
     def natural_key(self):
         return (self.nome_arrematador)
-    
+
+# class SoftDeleteManager(models.Manager):
+#     trashed = models.BooleanField(default=0)
+#     def get_by_natural_key(self, nome_arrematador):
+#         return self.get(nome_arrematador=nome_arrematador)
+
 class Movimento(models.Model):
     data_movimento = models.DateField(auto_now=True,editable=False)
     arrematador_fk = models.ForeignKey(Arrematador, on_delete=models.CASCADE)
     valor_arremate = models.DecimalField(decimal_places=2, max_digits=8)
     prenda_fk = models.ForeignKey('Prenda', on_delete=models.CASCADE)
+
     def __str__(self):
         return "%s - %s : R$ %s"%(self.arrematador_fk.nome_arrematador,self.prenda_fk.tipo_prenda_fk.nome,self.valor_arremate)
     def send_to_stream(self):
