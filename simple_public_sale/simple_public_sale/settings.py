@@ -151,9 +151,12 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "asgi_redis.RedisChannelLayer",
         "CONFIG":{
-            "hosts":[("localhost",6379)]
+            "hosts":[("localhost",6379)],
+            'expiry':86400,
+            'group_expiry':86400
         },
         "ROUTING": "channels_core.routing.channel_routing",
+
     },
 }
 
