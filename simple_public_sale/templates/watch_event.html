@@ -91,6 +91,7 @@
         function openWebSocket(username, group_id) {
             console.log(username, group_id);
             socket = new WebSocket("ws://" + window.location.host + "/chat/?username=" + username + "&group_id=" + group_id);
+
             socket.onmessage = function (e) {
                 console.log(e.data);
 
@@ -103,7 +104,11 @@
                 console.log($.parseJSON(e.data));
             };
             socket.onopen = function () {
-                socket.send("hello world");
+                {#socket.send("hello world");#}
+                //setInterval(function () {
+                //    var data = {group_id:group_id,username:username}
+                 //   socket.send(JSON.stringify(data));
+                //},500)
             };
             // Call onopen directly if socket is already open
             if (socket.readyState == WebSocket.OPEN) socket.onopen();
