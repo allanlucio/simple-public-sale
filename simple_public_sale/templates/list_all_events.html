@@ -1,52 +1,45 @@
 {% extends 'base.html' %}
 {% block content %}
-    <div class="container">
-        <br>
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item"><a href="#">Core</a></li>
-              <li class="breadcrumb-item"><a href="#">List</a></li>
-              <li class="breadcrumb-item active"> Events </li>
-            </ol>
-        </nav>
+    <div class="container mt-4">
+
         <div class="row">
-        {% for evento in eventos %}
-            <div class="col-sm-3">
-                <div class="card">
+            {% for evento in eventos %}
+                <div class="col-sm-3">
+                    <div class="card mt-3">
+                        <img class="img-fluid" src="{{ evento.url_image }}" alt="card-image">
 
-                <div class="card-body">
-                    <h5 class="card-title"> {{ evento.nome_evento.capitalize }} </h5>
-                    <h6 class="card-subtitle mb-2 text-muted"> {{ evento.data_evento }}</h6>
-                    <a class="card-link" href="{% url 'watch-event' evento.grupo.id %}">Assistir</a>
-                    <a class="card-link" href="{% url 'manage-event' evento.id %}">Gerenciar</a>
+                        <div class="card-body">
+                            <h5 class="card-title"> {{ evento.nome_evento.capitalize }} </h5>
+                            <h6 class="card-subtitle mb-2 text-muted"> {{ evento.data_evento | date:'d/m/Y' }}</h6>
+                            <a class="card-link" href="{% url 'watch-event' evento.grupo.id %}">Assistir</a>
+                            <a class="card-link" href="{% url 'manage-event' evento.id %}">Gerenciar</a>
+                        </div>
+                    </div>
+
                 </div>
-            </div>
-
-            </div>
 
 
-        {% endfor %}
+            {% endfor %}
         </div>
 
     </div>
 
 
 
-<script>
-    function openWebSocket(username,group_id){
-       socket = new WebSocket("ws://" + window.location.host + "/chat/?username="+username+"&group_id="+group_id);
-       socket.onmessage = function(e) {
-           console.log(e.data);
-    };
-        socket.onopen = function() {
-        socket.send("hello world");
-    };
-        // Call onopen directly if socket is already open
-        if (socket.readyState == WebSocket.OPEN) socket.onopen();
-    }
+    <script>
+        function openWebSocket(username, group_id) {
+            socket = new WebSocket("ws://" + window.location.host + "/chat/?username=" + username + "&group_id=" + group_id);
+            socket.onmessage = function (e) {
+                console.log(e.data);
+            };
+            socket.onopen = function () {
+                socket.send("hello world");
+            };
+            // Call onopen directly if socket is already open
+            if (socket.readyState == WebSocket.OPEN) socket.onopen();
+        }
 
 
-
-</script>
+    </script>
 {% endblock %}
 

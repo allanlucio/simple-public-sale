@@ -44,6 +44,9 @@ class Prenda(models.Model):
     caracteristicas = models.ManyToManyField(Caracteristica,through='CaracteristicaPrenda')
     def __str__(self):
         return self.tipo_prenda_fk.nome
+    def last_three_movements(self):
+        return self.movimento_set.all().order_by("-data_movimento")[0:3]
+
 class CaracteristicaPrenda(models.Model):
     prenda = models.ForeignKey(Prenda,on_delete=models.CASCADE)
     caracteristica = models.ForeignKey(Caracteristica,on_delete=models.CASCADE)
