@@ -40,13 +40,13 @@ def manage_event(request,evento_id):
 
     if request.method == 'POST':
 
-        form = MovimentoForm(request.POST)
+        form = MovimentoForm(request.POST, data = [request.POST.get('prenda_id')])
 
         if form.is_valid():
 
 
-            arrematador_nome=form.cleaned_data['nome_arrematador']
-            valor=form.cleaned_data['valor_arremate']
+            arrematador_nome=request.POST.get('nome_arrematador')
+            valor=request.POST.get('valor_arremate')
 
             prenda_id = request.POST.get('prenda_id')
 
@@ -57,20 +57,20 @@ def manage_event(request,evento_id):
             movimento=Movimento(arrematador_fk=arrematador,prenda_fk=prenda,valor_arremate=valor)
 
 
-            movimento_anterior = Movimento.objects.filter(prenda_fk = prenda_id)
+            #movimento_anterior = Movimento.objects.filter(prenda_fk = prenda_id)
 
-            if movimento_anterior:
-                movimento_anterior=movimento_anterior[0]
+            #if movimento_anterior:
+            #    movimento_anterior=movimento_anterior[0]
 
-                if Decimal(movimento.valor_arremate) <= movimento_anterior.valor_arremate:
-                    raise ValidationError("Valor do Arremate menor do que o valor atual!")
-                else:
+            #    if Decimal(movimento.valor_arremate) <= movimento_anterior.valor_arremate:
+            #        raise ValidationError("Valor do Arremate menor do que o valor atual!")
+            #    else:
 
-                    movimento.save()
+            movimento.save()
                     # send_to_evento(evento=evento)
-            else:
-                if Decimal(movimento.valor_arremate) <= prenda.valor_inicial:
-                    raise ValidationError("Valor do Arremate menor do que o valor inicial da prenda!")
+            #else:
+            #    if Decimal(movimento.valor_arremate) <= prenda.valor_inicial:
+            #        raise ValidationError("Valor do Arremate menor do que o valor inicial da prenda!")
 
             # data=get_data_stream_view(evento)
 
