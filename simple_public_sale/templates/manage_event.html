@@ -32,6 +32,7 @@
                          aria-labelledby="headingOne"
                          data-parent="#accordion">
                         <div class="card-body">
+
                             <form method="post">
                                 {% csrf_token %}
                                 <div class="row">
@@ -39,14 +40,14 @@
                                     <div class="col-8">
                                         <h4>Adicione um novo lance</h4>
                                         <div class="md-form">
-                                            <label for="arrematador-{{ forloop.counter }}">Arrematador</label>
-                                            <input type="text" name="arrematador" id="arrematador-{{ forloop.counter }}"
-                                                   class="form-control">
+                                            {{ form.nome_arrematador.errors }}
+                                            <label for="{{ form.nome_arrematador.id_for_label }}">Arrematador</label>
+                                            {{ form.nome_arrematador }}
                                         </div>
                                         <div class="md-form">
-                                            <label for="valor-{{ forloop.counter }}">Valor</label>
-                                            <input name="valor" type="number" id="valor-{{ forloop.counter }}"
-                                                   class="form-control">
+                                            {{ form.valor_arremate.errors }}
+                                            <label for="{{ form.valor_arremate_id_for_label }}">Valor</label>
+                                            {{ form.valor_arremate }}
                                         </div>
                                         <input type="hidden" name="prenda_id" value="{{ prenda.pk }}">
                                         <input type="hidden" name="group_id" value="{{ evento.grupo_id }}">
@@ -73,6 +74,7 @@
 
 
                             </form>
+
                         </div>
                     </div>
                 </div>
