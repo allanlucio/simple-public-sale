@@ -13,6 +13,8 @@ from channels_core.models import GrupoEvento
 from core.models import Evento, Prenda, Arrematador, Movimento
 from core.utils import get_data_stream_view, send_to_evento
 
+from .forms import MovimentoForm
+
 
 def send_message(request):
     if request.method == 'POST':
@@ -38,43 +40,50 @@ def manage_event(request,evento_id):
 
     if request.method == 'POST':
 
-        arrematador_nome=request.POST.get('arrematador')
-        valor=request.POST.get('valor')
+        form = MovimentoForm(request.POST)
 
-        prenda_id = request.POST.get('prenda_id')
-
-        prenda = Prenda.objects.get(pk=prenda_id, evento_fk=evento)
-
-        arrematador=Arrematador.objects.get_or_create(nome_arrematador=arrematador_nome)[0]
-
-        movimento=Movimento(arrematador_fk=arrematador,prenda_fk=prenda,valor_arremate=valor)
+        if form.is_valid():
 
 
-        movimento_anterior = Movimento.objects.filter(prenda_fk = prenda_id)
+            arrematador_nome=form.cleaned_data['nome_arrematador']
+            valor=form.cleaned_data['valor_arremate']
 
-        if movimento_anterior:
-            movimento_anterior=movimento_anterior[0]
+            prenda_id = request.POST.get('prenda_id')
 
-            if Decimal(movimento.valor_arremate) <= movimento_anterior.valor_arremate:
-                raise ValidationError("Valor do Arremate menor do que o valor atual!")
+            prenda = Prenda.objects.get(pk=prenda_id, evento_fk=evento)
+
+            arrematador=Arrematador.objects.get_or_create(nome_arrematador=arrematador_nome)[0]
+
+            movimento=Movimento(arrematador_fk=arrematador,prenda_fk=prenda,valor_arremate=valor)
+
+
+            movimento_anterior = Movimento.objects.filter(prenda_fk = prenda_id)
+
+            if movimento_anterior:
+                movimento_anterior=movimento_anterior[0]
+
+                if Decimal(movimento.valor_arremate) <= movimento_anterior.valor_arremate:
+                    raise ValidationError("Valor do Arremate menor do que o valor atual!")
+                else:
+
+                    movimento.save()
+                    # send_to_evento(evento=evento)
             else:
+                if Decimal(movimento.valor_arremate) <= prenda.valor_inicial:
+                    raise ValidationError("Valor do Arremate menor do que o valor inicial da prenda!")
 
-                movimento.save()
-                # send_to_evento(evento=evento)
-        else:
-            if Decimal(movimento.valor_arremate) <= prenda.valor_inicial:
-                raise ValidationError("Valor do Arremate menor do que o valor inicial da prenda!")
+            # data=get_data_stream_view(evento)
 
-        # data=get_data_stream_view(evento)
+            # a=Channel('send-to-group').send({'message': data},immediately=True)
 
-        # a=Channel('send-to-group').send({'message': data},immediately=True)
+        elif request.method == 'GET':
 
-    elif request.method == 'GET':
+            prenda = Prenda.objects.get(pk=request.GET.get('prenda'))
 
-        prenda = Prenda.objects.get(pk=request.GET.get('prenda'))
-
-    print(prenda)
-    return render(request,'manage_event.html',{'evento':evento,'prenda_selected':prenda})
+        print(prenda)
+    else:
+        form = MovimentoForm()
+    return render(request,'manage_event.html',{'evento':evento,'prenda_selected':'prenda', 'form':form})
 
 
 def undo_arrematador_lance(request,movimento_id):
