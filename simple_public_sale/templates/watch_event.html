@@ -1,5 +1,5 @@
 {% include 'base.html' %}
-
+{% load static %}
 {% block content %}
     <div class="container mt-4">
 
@@ -38,7 +38,7 @@
                     </div>
                 </div>
 
-                <div id="move-2" class="row mt-3">
+                <div id="move-2" class="row mt-3 invisible">
                     <div class="card col-md-12 text-secondary">
                         <div class="card-body">
                             <h2 class="float-left">Nome do arrematador</h2>
@@ -47,14 +47,6 @@
                     </div>
                 </div>
 
-                <div id="move-3" class="row mt-3">
-                    <div class="card col-md-12 text-secondary">
-                        <div class="card-body">
-                            <h2 class="float-left">Nome do arrematador</h2>
-                            <h3 class="float-right">R$ 999,90</h3>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <div class="row mt-3 py-2 z-depth-1">
@@ -72,20 +64,17 @@
                 </div>
 
                 <div id="attributes" class="col-md-8">
-                    <table class="table">
+                    <table class="table table-striped">
 
-                        <tr id="caracteristica-1">
+                        <thead>
+                            <td colspan="2">Descrição do animal</td>
+                        </thead>
+
+                        <tr id="attribute-1">
                             <th scope="row">Peso</th>
                             <td>999,99 Kg</td>
                         </tr>
-                        <tr id="caracteristica-1">
-                            <th scope="row">Peso</th>
-                            <td>999,99 Kg</td>
-                        </tr>
-                        <tr id="caracteristica-1">
-                            <th scope="row">Peso</th>
-                            <td>999,99 Kg</td>
-                        </tr>
+
                     </table>
                 </div>
             </div>
@@ -102,15 +91,24 @@
         function openWebSocket(username, group_id) {
             console.log(username, group_id);
             socket = new WebSocket("ws://" + window.location.host + "/chat/?username=" + username + "&group_id=" + group_id);
+
             socket.onmessage = function (e) {
+                console.log(e.data);
+
                 json = $.parseJSON(e.data);
-                console.log($("#gift-title"));
+
+                console.log(json.toString());
+                //console.log($("#gift-title"));
                 start_event(json);
 
                 console.log($.parseJSON(e.data));
             };
             socket.onopen = function () {
-                socket.send("hello world");
+                {#socket.send("hello world");#}
+                //setInterval(function () {
+                //    var data = {group_id:group_id,username:username}
+                 //   socket.send(JSON.stringify(data));
+                //},500)
             };
             // Call onopen directly if socket is already open
             if (socket.readyState == WebSocket.OPEN) socket.onopen();
@@ -119,30 +117,6 @@
 
     </script>
 
-    <script>
-        $("#btn-play").click(function () {
-            $("#waiting").show();
-            $("#event-info").hide();
-        });
-
-        $(document).ready(function () {
-            $("#waiting").hide()
-            $("#gift-container").hide();
-            $(".carousel").carousel();
-        });
-
-        function start_event(json){
-            $("#waiting").hide();
-            $("#gift-container").show();
-
-            $("#gift-title").text("Boi");
-
-            $("#last-move h2").text(json.arrematador.toString());
-
-            gifts = $.parseJSON(json.prenda.toString());
-            min_value = gifts[0].fields.valor_inicial.toString();
-
-            $("#last-move h1").text("R$ "+json.valor);
-        }
+    <script src="{% static 'js/watch_event.js' %}">
     </script>
 {% endblock %}

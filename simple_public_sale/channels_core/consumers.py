@@ -1,3 +1,4 @@
+
 from django.http import HttpResponse
 from channels.handler import AsgiHandler
 import json
@@ -9,6 +10,21 @@ from django.core.cache import cache
 from channels_core.models import GrupoEvento
 from core.utils import cache_last_event_message
 
+
+def connect_group_safe(message,username,group_id):
+
+    grupo_evento = GrupoEvento.objects.get(pk=group_id)
+    if (grupo_evento.evento.is_online()):
+        # Group(group_id).discard(message.reply_channel)
+        Group(group_id).add(message.reply_channel)
+        print([a for a in Group(group_id).channel_layer.group_channels(group_id)])
+        data = cache.get('last-event-%s' % group_id)
+        message.reply_channel.send({"text": data})
+        return True
+    else:
+        message.reply_channel.send({"text": "Evento offline"})
+        message.reply_channel.send({"close": True})
+        return False
 
 @channel_session
 def ws_connect(message, room_name):
@@ -24,19 +40,7 @@ def ws_connect(message, room_name):
         # Set the username in the session
         message.channel_session["username"] = params[b"username"][0].decode("utf8")
         group_id=params[b"group_id"][0].decode("utf8")
-
-        grupo_evento=GrupoEvento.objects.get(pk=group_id)
-        if(grupo_evento.online):
-            Group(group_id).add(message.reply_channel)
-            data=cache.get('last-event-%s'%group_id)
-            message.reply_channel.send({"text":data})
-
-        else:
-            message.reply_channel.send({"text":"Evento offline"})
-            message.reply_channel.send({"close": True})
-
-
-
+        connect_group_safe(message,username=message.channel_session["username"],group_id=group_id)
     else:
         # Close the connection.
         message.reply_channel.send({"close": True})
@@ -44,12 +48,12 @@ def ws_connect(message, room_name):
 # Connected to websocket.receive
 @channel_session
 def ws_message(message, room_name):
-    Group("1a674718-166a-4b57-8e14-462cb331a13c").send({
-        "text": json.dumps({
-            "text": message["text"],
-            "username": message.channel_session["username"],
-        }),
-    })
+    data=json.loads(message.content.get('text'))
+    group_id=data.get('group_id')
+    username=data.get('username')
+    ativo=connect_group_safe(message, username=username,group_id=group_id)
+    if ativo:
+        print("KeepAlive")
 
 # Connected to websocket.disconnect
 @channel_session

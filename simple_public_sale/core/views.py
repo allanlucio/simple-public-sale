@@ -3,9 +3,12 @@ from decimal import Decimal
 from django.core import serializers
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import json
 # Create your views here.
+from django.urls import reverse
+from django.views.decorators.http import require_POST
+
 from channels_core.models import GrupoEvento
 from core.models import Evento, Prenda, Arrematador, Movimento
 from core.utils import get_data_stream_view, send_to_evento
@@ -31,6 +34,8 @@ def watch_event(request,group_id):
 
 def manage_event(request,evento_id):
     evento = Evento.objects.get(pk=evento_id)
+    prenda = None
+
     if request.method == 'POST':
 
         arrematador_nome=request.POST.get('arrematador')
@@ -64,7 +69,17 @@ def manage_event(request,evento_id):
 
         # a=Channel('send-to-group').send({'message': data},immediately=True)
 
+    elif request.method == 'GET':
+
+        prenda = Prenda.objects.get(pk=request.GET.get('prenda'))
+
+    print(prenda)
+    return render(request,'manage_event.html',{'evento':evento,'prenda_selected':prenda})
 
 
-
-    return render(request,'manage_event.html',{'evento':evento})
+def undo_arrematador_lance(request,movimento_id):
+    movimento=Movimento.objects.get(pk=movimento_id)
+    movimento.delete()
+    prenda=movimento.prenda_fk
+    evento=prenda.evento_fk
+    return redirect(reverse(viewname='manage-event',kwargs={'evento_id':evento.pk})+"?prenda=%s"%prenda.pk)

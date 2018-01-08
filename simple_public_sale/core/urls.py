@@ -21,8 +21,9 @@ from core.views import *
 
 urlpatterns = [
 
-    path('', list_all_events),
+    path('', list_all_events, name='list-all-events'),
     re_path('assistir/evento/(?P<group_id>.+)', watch_event, name='watch-event'),
     re_path('gerenciar/evento/(?P<evento_id>.+)', manage_event, name='manage-event'),
+    re_path('gerenciar/desfazer/movimento/(?P<movimento_id>.+)', undo_arrematador_lance, name='undo-movement-prenda'),
 
 ]
