@@ -10,7 +10,7 @@ from django.urls import reverse
 from django.views.decorators.http import require_POST
 
 from channels_core.models import GrupoEvento
-from core.models import Evento, Prenda, Arrematador, Movimento
+from core.models import Evento, Prenda, Participante, Movimento
 from core.utils import get_data_stream_view, send_to_evento
 
 from .forms import MovimentoForm
@@ -50,28 +50,29 @@ def manage_event(request,evento_id):
 
             prenda_id = request.POST.get('prenda_id')
 
-            prenda = Prenda.objects.get(pk=prenda_id, evento_fk=evento)
+            prenda = Prenda.objects.get(pk=prenda_id, evento=evento)
 
-            arrematador=Arrematador.objects.get_or_create(nome_arrematador=arrematador_nome)[0]
+            arrematador=Participante.objects.get_or_create(apelido=arrematador_nome.upper())[0]
 
-            movimento=Movimento(arrematador_fk=arrematador,prenda_fk=prenda,valor_arremate=valor)
+            movimento=Movimento(arrematador=arrematador,prenda=prenda,valor=valor)
 
 
-            movimento_anterior = Movimento.objects.filter(prenda_fk = prenda_id)
+            movimento_anterior = Movimento.objects.filter(prenda__pk = prenda_id).order_by('-valor')
 
             if movimento_anterior:
                 movimento_anterior=movimento_anterior[0]
 
-                if Decimal(movimento.valor_arremate) <= movimento_anterior.valor_arremate:
+                if Decimal(movimento.valor) <= movimento_anterior.valor:
                     raise ValidationError("Valor do Arremate menor do que o valor atual!")
                 else:
-
+                    print("Salvando movimento")
                     movimento.save()
                     # send_to_evento(evento=evento)
             else:
-                if Decimal(movimento.valor_arremate) <= prenda.valor_inicial:
+                if Decimal(movimento.valor) <= prenda.valor_inicial:
                     raise ValidationError("Valor do Arremate menor do que o valor inicial da prenda!")
-
+                else:
+                    movimento.save()
             # data=get_data_stream_view(evento)
 
             # a=Channel('send-to-group').send({'message': data},immediately=True)
@@ -83,12 +84,12 @@ def manage_event(request,evento_id):
         print(prenda)
     else:
         form = MovimentoForm()
-    return render(request,'manage_event.html',{'evento':evento,'prenda_selected':'prenda', 'form':form})
+    return render(request,'manage_event.html',{'evento':evento,'prenda_selected':prenda, 'form':form})
 
 
 def undo_arrematador_lance(request,movimento_id):
     movimento=Movimento.objects.get(pk=movimento_id)
     movimento.delete()
-    prenda=movimento.prenda_fk
-    evento=prenda.evento_fk
+    prenda=movimento.prenda
+    evento=prenda.evento
     return redirect(reverse(viewname='manage-event',kwargs={'evento_id':evento.pk})+"?prenda=%s"%prenda.pk)

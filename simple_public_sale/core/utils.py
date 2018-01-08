@@ -20,18 +20,18 @@ def send_to_evento(prenda):
 
 
 def get_data_stream_view(prenda):
-    movimentos=prenda.movimento_set.all().order_by('-valor_arremate')
+    movimentos=prenda.movimento_set.all().order_by('-valor')
     # movimentos=Movimento.objects.filter(prenda_fk__evento_fk=evento).order_by('-valor_arremate')
 
     movimento_atual=movimentos.first()
-    prenda = movimento_atual.prenda_fk
+    prenda = movimento_atual.prenda
 
     movimentos_serialized=serializers.serialize('json',movimentos,use_natural_foreign_keys=True, use_natural_primary_keys=True)
-    arrematador_atual_serialized=serializers.serialize('json',[movimento_atual.arrematador_fk])
+    arrematador_atual_serialized=serializers.serialize('json',[movimento_atual.arrematador])
 
 
     prenda_serialized=serializers.serialize('json', [prenda])
-    prenda_tipo_serialized=serializers.serialize('json', [prenda.tipo_prenda_fk])
+    prenda_tipo_serialized=serializers.serialize('json', [prenda.tipo_prenda])
     print(movimentos_serialized)
     print(prenda_serialized)
     print(prenda_tipo_serialized)
@@ -41,7 +41,7 @@ def get_data_stream_view(prenda):
         'movimentos': movimentos_serialized,
         'prenda': prenda_serialized,
         'prenda_tipo':prenda_tipo_serialized,
-        'group_id': '%s' % prenda.evento_fk.grupo_id
+        'group_id': '%s' % prenda.evento.grupo_id
     }
 
     return data

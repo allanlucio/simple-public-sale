@@ -6,19 +6,37 @@ from channels_core.models import GrupoEvento
 from core.utils import send_to_evento
 
 
-class Doador(models.Model):
-    nome_doador = models.CharField(max_length=100)
-    apelido_doador = models.CharField(max_length=100)
-    cpf_cnpj_doador = models.CharField(max_length=14)
+# class Doador(models.Model):
+#     nome_doador = models.CharField(max_length=100)
+#     apelido_doador = models.CharField(max_length=100)
+#     cpf_cnpj_doador = models.CharField(max_length=14)
+#     def __str__(self):
+#         return self.nome_doador
+class ParticipanteManager(models.Manager):
+    def get_by_natural_key(self, apelido):
+        return self.get(nome=apelido)
+
+class Participante(models.Model):
+    apelido = models.CharField(max_length=100,null=True,blank=True,unique=True,db_index=True)
+    nome = models.CharField(max_length=100,null=True,blank=True)
+    cpf_cnpj = models.CharField(max_length=14,null=True,blank=True)
+    rg = models.CharField(max_length=50,null=True,blank=True)
+    endereco = models.CharField(max_length=200,null=True,blank=True)
+
+    objects=ParticipanteManager()
     def __str__(self):
-        return self.nome_doador
+        return self.apelido
+
+    def natural_key(self):
+        return (self.apelido)
+
 class Evento(models.Model):
-    nome_evento = models.CharField(max_length=100)
-    data_evento = models.DateTimeField(null=True,blank=True)
+    nome = models.CharField(max_length=100)
+    data = models.DateTimeField(null=True,blank=True)
     url_image = models.ImageField(upload_to='imagens')
     grupo = models.OneToOneField(GrupoEvento, null=True, blank=True, on_delete=models.CASCADE)
     def __str__(self):
-        return self.nome_evento
+        return self.nome
     def is_online(self):
         return self.grupo.online
     
@@ -34,18 +52,19 @@ class Caracteristica(models.Model):
     descricao = models.CharField(max_length=150)
     def __str__(self):
         return self.caracteristica
+
 class Prenda(models.Model):
-    doador_fk = models.ForeignKey(Doador, on_delete=models.CASCADE)
+    doador = models.ForeignKey(Participante, on_delete=models.CASCADE)
     valor_inicial = models.DecimalField(decimal_places=2, max_digits=8)
-    tipo_prenda_fk = models.ForeignKey(TipoPrenda, on_delete=models.CASCADE)
-    evento_fk = models.ForeignKey(Evento, on_delete=models.CASCADE)
+    tipo_prenda = models.ForeignKey(TipoPrenda, on_delete=models.CASCADE)
+    evento = models.ForeignKey(Evento, on_delete=models.CASCADE)
     arrematada = models.BooleanField(default=False)
     url_image = models.ImageField(upload_to='prendas/imagens', null=True, blank=True)
     caracteristicas = models.ManyToManyField(Caracteristica,through='CaracteristicaPrenda')
     def __str__(self):
-        return self.tipo_prenda_fk.nome
+        return self.tipo_prenda.nome
     def last_three_movements(self):
-        return self.movimento_set.all().order_by("-data_movimento")[0:3]
+        return self.movimento_set.all().order_by("-data_ocorrencia")[0:3]
 
 class CaracteristicaPrenda(models.Model):
     prenda = models.ForeignKey(Prenda,on_delete=models.CASCADE)
@@ -54,24 +73,11 @@ class CaracteristicaPrenda(models.Model):
     class Meta:
         unique_together=('prenda','caracteristica')
     def __str__(self):
-        return "%s - %s"%(self.caracteristica.caracteristica, self.prenda.tipo_prenda_fk.nome)
+        return "%s - %s"%(self.caracteristica.caracteristica, self.prenda.tipo_prenda.nome)
 
-class ArrematadorManager(models.Manager):
-    def get_by_natural_key(self, nome_arrematador):
-        return self.get(nome_arrematador=nome_arrematador)
 
-class Arrematador(models.Model):
-    nome_arrematador = models.CharField(max_length=100,unique=True,db_index=True)
-    cpf_cnpj_arrematador = models.CharField(max_length=14,null=True,blank=True)
-    rg_arrematador = models.CharField(max_length=50,null=True,blank=True)
-    endereco_arrematador = models.CharField(max_length=200,null=True,blank=True)
 
-    objects=ArrematadorManager()
-    def __str__(self):
-        return self.nome_arrematador
 
-    def natural_key(self):
-        return (self.nome_arrematador)
 
 # class SoftDeleteManager(models.Manager):
 #     trashed = models.BooleanField(default=0)
@@ -79,16 +85,16 @@ class Arrematador(models.Model):
 #         return self.get(nome_arrematador=nome_arrematador)
 
 class Movimento(models.Model):
-    data_movimento = models.DateField(auto_now=True,editable=False)
-    arrematador_fk = models.ForeignKey(Arrematador, on_delete=models.CASCADE)
-    valor_arremate = models.DecimalField(decimal_places=2, max_digits=8)
-    prenda_fk = models.ForeignKey('Prenda', on_delete=models.CASCADE)
+    data_ocorrencia = models.DateField(auto_now=True,editable=False)
+    arrematador = models.ForeignKey(Participante, on_delete=models.CASCADE)
+    valor = models.DecimalField(decimal_places=2, max_digits=8)
+    prenda = models.ForeignKey('Prenda', on_delete=models.CASCADE)
 
     def __str__(self):
-        return "%s - %s : R$ %s"%(self.arrematador_fk.nome_arrematador,self.prenda_fk.tipo_prenda_fk.nome,self.valor_arremate)
+        return "%s - %s : R$ %s"%(self.arrematador.apelido,self.prenda.tipo_prenda.nome,self.valor)
     def send_to_stream(self):
-        if self.prenda_fk.evento_fk.is_online():
-            prenda = self.prenda_fk
+        if self.prenda.evento.is_online():
+            prenda = self.prenda
             send_to_evento(prenda=prenda)
             print("Stream Atualizada")
         else:
@@ -108,10 +114,10 @@ def pre_delete_movimento(sender,instance, **kwargs):
     assert isinstance(instance, Movimento)
     instance.send_to_stream()
 
-@receiver(pre_save, sender=Arrematador)
+@receiver(pre_save, sender=Participante)
 def pre_save_arrematador(sender,instance, **kwargs):
-    assert isinstance(instance, Arrematador)
-    instance.nome_arrematador=instance.nome_arrematador.upper()
+    assert isinstance(instance, Participante)
+    instance.apelido=instance.apelido.upper()
 
 @receiver(pre_save, sender=CaracteristicaPrenda)
 def pre_save_caracteristica_prenda(sender,instance, **kwargs):
