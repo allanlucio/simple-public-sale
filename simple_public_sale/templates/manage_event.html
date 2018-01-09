@@ -40,12 +40,14 @@
                                     <div class="col-8">
                                         <h4>Adicione um novo lance</h4>
                                         <div class="md-form">
-                                            {{ form.nome_arrematador.errors }}
                                             <label for="{{ form.nome_arrematador.id_for_label }}">Arrematador</label>
                                             {{ form.nome_arrematador }}
                                         </div>
                                         <div class="md-form">
-                                            {{ form.valor_arremate.errors }}
+                                            {% if form.valor_arremate.errors %}
+                                                <script>alert('{{ form.valor_arremate.errors }}');</script>
+                                            {% endif %}
+
                                             <label for="{{ form.valor_arremate_id_for_label }}">Valor</label>
                                             {{ form.valor_arremate }}
                                         </div>
