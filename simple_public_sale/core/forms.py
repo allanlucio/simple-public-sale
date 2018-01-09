@@ -2,7 +2,7 @@ from decimal import Decimal
 from django import forms
 from django.core.exceptions import ValidationError
 
-from .models import Movimento
+from .models import Movimento, Prenda
 
 
 
@@ -21,20 +21,24 @@ class MovimentoForm(forms.Form):
         cleaned_data = super().clean()
         valor_arremate = cleaned_data.get('valor_arremate')
 
-        #prenda = Prenda.objects.get(pk=self.data['prenda_id'], evento_fk=self.data['evento'])
-
         movimento_anterior = Movimento.objects.filter(prenda_fk=self.data['prenda_id'])
-        print(self.data['prenda_id'])
+        print(self.data)
 
         if movimento_anterior:
             print("passou")
             movimento_anterior=movimento_anterior[0]
 
-
             if Decimal(valor_arremate) <= movimento_anterior.valor_arremate:
                 msg = "Valor do arremate menor do que o valor atual da prenda!"
-                print("Exceção")
                 raise forms.ValidationError(msg)
+        else:
+            prenda = Prenda.objects.get(id = self.data['prenda_id'])
+            print(prenda)
+
+            if Decimal(valor_arremate) <= prenda.valor_inicial:
+                msg = "Valor do arremate menor do que o valor inicial da prenda!"
+                raise forms.ValidationError(msg)
+
 
 
 
