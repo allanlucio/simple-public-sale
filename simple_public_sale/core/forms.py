@@ -21,14 +21,14 @@ class MovimentoForm(forms.Form):
         cleaned_data = super().clean()
         valor_arremate = cleaned_data.get('valor_arremate')
 
-        movimento_anterior = Movimento.objects.filter(prenda_fk=self.data['prenda_id']).order_by('-id')
+        movimento_anterior = Movimento.objects.filter(prenda__pk=self.data['prenda_id']).order_by('-id')
         print(self.data)
 
         if movimento_anterior:
             print("passou")
             movimento_anterior=movimento_anterior[0]
 
-            if Decimal(valor_arremate) <= movimento_anterior.valor_arremate:
+            if Decimal(valor_arremate) <= movimento_anterior.valor:
                 msg = "Valor do arremate não pode ser menor ou igual do que o valor atual da prenda!"
                 raise forms.ValidationError(msg)
         else:
