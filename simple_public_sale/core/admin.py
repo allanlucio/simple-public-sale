@@ -12,9 +12,9 @@ class PrendaAdmin(admin.ModelAdmin):
 admin.site.register(Evento)
 admin.site.register(Prenda,PrendaAdmin)
 admin.site.register(Movimento)
-admin.site.register(Doador)
+# admin.site.register(Doador)
 admin.site.register(TipoPrenda)
-admin.site.register(Arrematador)
+admin.site.register(Participante)
 admin.site.register(Caracteristica)
 admin.site.register(CaracteristicaPrenda)
 
