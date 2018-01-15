@@ -100,6 +100,6 @@ def donate_prenda(request,prenda_id):
 
     prenda.get_prenda_clone()
 
-
+    print('oi')
 
     return redirect(reverse(viewname='manage-event', kwargs={'evento_id': evento.pk}) + "?prenda=%s" % prenda.pk)
