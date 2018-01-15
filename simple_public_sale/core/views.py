@@ -93,3 +93,13 @@ def undo_arrematador_lance(request,movimento_id):
     prenda=movimento.prenda
     evento=prenda.evento
     return redirect(reverse(viewname='manage-event',kwargs={'evento_id':evento.pk})+"?prenda=%s"%prenda.pk)
+
+@require_POST
+def donate_prenda(request,prenda_id):
+    prenda=Prenda.objects.get(pk=prenda_id)
+
+    prenda.get_prenda_clone()
+
+
+
+    return redirect(reverse(viewname='manage-event', kwargs={'evento_id': evento.pk}) + "?prenda=%s" % prenda.pk)

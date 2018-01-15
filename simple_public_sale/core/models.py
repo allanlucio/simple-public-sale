@@ -5,7 +5,7 @@ from django.dispatch import receiver
 from channels_core.models import GrupoEvento
 from core.utils import send_to_evento
 
-
+import copy
 # class Doador(models.Model):
 #     nome_doador = models.CharField(max_length=100)
 #     apelido_doador = models.CharField(max_length=100)
@@ -59,10 +59,32 @@ class Prenda(models.Model):
     tipo_prenda = models.ForeignKey(TipoPrenda, on_delete=models.CASCADE)
     evento = models.ForeignKey(Evento, on_delete=models.CASCADE)
     arrematada = models.BooleanField(default=False)
+
     url_image = models.ImageField(upload_to='prendas/imagens', null=True, blank=True)
+    parent = models.ForeignKey('Prenda', on_delete=models.CASCADE, blank=True, null=True)
     caracteristicas = models.ManyToManyField(Caracteristica,through='CaracteristicaPrenda')
+
     def __str__(self):
         return self.tipo_prenda.nome
+    def get_prenda_clone(self):
+        prenda = copy.copy(self)
+        # prenda.pk=None
+        prenda.doador = self.get_arrematador()
+        prenda.parent=self
+        prenda.pk=None
+        prenda.save()
+        for caracteristica_prenda in self.caracteristicaprenda_set.all():
+            new_caracteristica_prenda=copy.copy(caracteristica_prenda)
+            new_caracteristica_prenda.pk=None
+            new_caracteristica_prenda.prenda_id=prenda.id
+            new_caracteristica_prenda.save()
+
+    def get_arrematador(self):
+        if self.arrematada:
+            print("oioi")
+            return self.movimento_set.all().order_by('-valor').first().arrematador
+
+        raise IntegrityError("Esta prenda ainda nao foi arrematada")
     def last_three_movements(self):
         return self.movimento_set.all().order_by("-data_ocorrencia")[0:3]
 
@@ -74,15 +96,6 @@ class CaracteristicaPrenda(models.Model):
         unique_together=('prenda','caracteristica')
     def __str__(self):
         return "%s - %s"%(self.caracteristica.caracteristica, self.prenda.tipo_prenda.nome)
-
-
-
-
-
-# class SoftDeleteManager(models.Manager):
-#     trashed = models.BooleanField(default=0)
-#     def get_by_natural_key(self, nome_arrematador):
-#         return self.get(nome_arrematador=nome_arrematador)
 
 class Movimento(models.Model):
     data_ocorrencia = models.DateField(auto_now=True,editable=False)
