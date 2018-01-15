@@ -44,8 +44,13 @@
                                             {{ form.nome_arrematador }}
                                         </div>
                                         <div class="md-form">
-                                            {% if form.valor_arremate.errors %}
-                                                <script>alert('{{ form.valor_arremate.errors }}');</script>
+                                            {% if form.errors %}
+                                                {% for valor_arremate in form %}
+                                                  {% for error in valor_arremate.errors %}
+                                                      <script>alert('{{ error }}');</script>
+                                                  {% endfor %}
+                                                {% endfor %}
+
                                             {% endif %}
 
                                             <label for="{{ form.valor_arremate_id_for_label }}">Valor</label>
