@@ -15,76 +15,80 @@
 
         <div id="accordion" role="tablist">
             {% for prenda in evento.prenda_set.all %}
-                <div class="card">
-                    <div class="card-header" role="tab" id="heading_{{ forloop.counter }}">
-                        <h5 class="mb-0 float-left">
-                            <a data-toggle="collapse" href="#id_prenda_{{ forloop.counter }}" role="button"
-                               aria-expanded="true"
-                               aria-controls="collapseOne">
-                                {{ prenda.tipo_prenda.descricao }}
-                            </a>
-                        </h5>
+                {% if prenda.arrematada == False %}
+                    <div class="card">
+                        <div class="card-header" role="tab" id="heading_{{ forloop.counter }}">
+                            <h5 class="mb-0 float-left">
+                                <a data-toggle="collapse" href="#id_prenda_{{ forloop.counter }}" role="button"
+                                   aria-expanded="true"
+                                   aria-controls="collapseOne">
+                                    {{ prenda.tipo_prenda.descricao }}
+                                </a>
+                            </h5>
 
-                        <h6 class="float-right text-primary">Valor Inicial: R$ {{ prenda.valor_inicial }}</h6>
-                    </div>
+                            <h6 class="float-right text-primary">Valor Inicial: R$ {{ prenda.valor_inicial }}</h6>
+                        </div>
 
-                    <div id="id_prenda_{{ forloop.counter }}" class="collapse" role="tabpanel"
-                         aria-labelledby="headingOne"
-                         data-parent="#accordion">
-                        <div class="card-body">
+                        <div id="id_prenda_{{ forloop.counter }}" class="collapse" role="tabpanel"
+                             aria-labelledby="headingOne"
+                             data-parent="#accordion">
+                            <div class="card-body">
 
-                            <form method="post">
-                                {% csrf_token %}
-                                <div class="row">
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <div class="row">
 
-                                    <div class="col-8">
-                                        <h4>Adicione um novo lance</h4>
-                                        <div class="md-form">
-                                            <label for="{{ form.nome_arrematador.id_for_label }}">Arrematador</label>
-                                            {{ form.nome_arrematador }}
+                                        <div class="col-8">
+                                            <h4>Adicione um novo lance</h4>
+                                            <div class="md-form">
+                                                <label for="{{ form.nome_arrematador.id_for_label }}">Arrematador</label>
+                                                {{ form.nome_arrematador }}
+                                            </div>
+                                            <div class="md-form">
+                                                {% if form.errors %}
+                                                    {% for valor_arremate in form %}
+                                                      {% for error in valor_arremate.errors %}
+                                                          <script>alert('{{ error }}');</script>
+                                                      {% endfor %}
+                                                    {% endfor %}
+
+                                                {% endif %}
+
+                                                <label for="{{ form.valor_arremate_id_for_label }}">Valor</label>
+                                                {{ form.valor_arremate }}
+                                            </div>
+                                            <input type="hidden" name="prenda_id" value="{{ prenda.pk }}">
+                                            <input type="hidden" name="group_id" value="{{ evento.grupo_id }}">
+
+                                            <button type="submit" class="btn btn-primary" name="btn-enviar">Enviar</button><button type="submit" class="btn btn-danger" id="btn-arrematar" name="btn-arrematar">Arrematar</button>
+
                                         </div>
-                                        <div class="md-form">
-                                            {% if form.errors %}
-                                                {% for valor_arremate in form %}
-                                                  {% for error in valor_arremate.errors %}
-                                                      <script>alert('{{ error }}');</script>
-                                                  {% endfor %}
+
+                                        <div class="col-4">
+                                            <h5>Últimos três lances</h5>
+                                            <ul class="list-group">
+                                                {% for move in prenda.last_three_movements %}
+                                                    <li class="list-group-item">
+                                                        {{ move.arrematador.nome.capitalize }} (
+                                                        <span class="text-primary">{{ move.valor }}</span> )
+
+                                                        <a href="" class="btn-sm btn-danger float-right"><i
+                                                                class="material-icons">undo</i></a>
+                                                    </li>
                                                 {% endfor %}
-
-                                            {% endif %}
-
-                                            <label for="{{ form.valor_arremate_id_for_label }}">Valor</label>
-                                            {{ form.valor_arremate }}
+                                            </ul>
                                         </div>
-                                        <input type="hidden" name="prenda_id" value="{{ prenda.pk }}">
-                                        <input type="hidden" name="group_id" value="{{ evento.grupo_id }}">
-
-                                        <button type="submit" class="btn btn-primary">Enviar</button>
                                     </div>
 
-                                    <div class="col-4">
-                                        <h5>Últimos três lances</h5>
-                                        <ul class="list-group">
-                                            {% for move in prenda.last_three_movements %}
-                                                <li class="list-group-item">
-                                                    {{ move.arrematador.nome.capitalize }} (
-                                                    <span class="text-primary">{{ move.valor }}</span> )
-
-                                                    <a href="" class="btn-sm btn-danger float-right"><i
-                                                            class="material-icons">undo</i></a>
-                                                </li>
-                                            {% endfor %}
-                                        </ul>
-                                    </div>
-                                </div>
 
 
+                                </form>
 
-                            </form>
 
+                            </div>
                         </div>
                     </div>
-                </div>
+                {% endif %}
 
 
 
