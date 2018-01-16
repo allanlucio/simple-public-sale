@@ -6,7 +6,7 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{% url 'list-all-events' %}">Events</a></li>
-                <li class="breadcrumb-item active">{{ evento.nome_evento }}</li>
+                <li class="breadcrumb-item active">{{ evento.nome }}</li>
             </ol>
         </nav>
 
@@ -21,7 +21,7 @@
                             <a data-toggle="collapse" href="#id_prenda_{{ forloop.counter }}" role="button"
                                aria-expanded="true"
                                aria-controls="collapseOne">
-                                {{ prenda.tipo_prenda_fk.descricao }}
+                                {{ prenda.tipo_prenda.descricao }}
                             </a>
                         </h5>
 
@@ -67,8 +67,8 @@
                                         <ul class="list-group">
                                             {% for move in prenda.last_three_movements %}
                                                 <li class="list-group-item">
-                                                    {{ move.arrematador_fk.nome_arrematador.capitalize }} (
-                                                    <span class="text-primary">{{ move.valor_arremate }}</span> )
+                                                    {{ move.arrematador.nome.capitalize }} (
+                                                    <span class="text-primary">{{ move.valor }}</span> )
 
                                                     <a href="" class="btn-sm btn-danger float-right"><i
                                                             class="material-icons">undo</i></a>
