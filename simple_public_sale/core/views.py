@@ -38,7 +38,7 @@ def manage_event(request,evento_id):
     evento = Evento.objects.get(pk=evento_id)
     prenda = None
 
-    if request.method == 'POST':
+    if request.method == 'POST' and 'btn-enviar' in request.POST:
 
         form = MovimentoForm(request.POST, data = [request.POST.get('prenda_id')])
 
@@ -72,6 +72,17 @@ def manage_event(request,evento_id):
             prenda = Prenda.objects.get(pk=request.GET.get('prenda'))
 
         print(prenda)
+    elif request.method == 'POST' and 'btn-arrematar' in request.POST:
+        prenda_id = request.POST.get('prenda_id')
+        prenda = Prenda.objects.get(pk=prenda_id, evento=evento)
+
+        if prenda.arrematada == False:
+            prenda.arrematada = True
+            prenda.save()
+            print("Arrematou!")
+        form = MovimentoForm()
+
+
     else:
         form = MovimentoForm()
     return render(request,'manage_event.html',{'evento':evento,'prenda_selected':prenda, 'form':form})
