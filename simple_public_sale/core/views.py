@@ -72,22 +72,24 @@ def manage_event(request,evento_id):
             prenda = Prenda.objects.get(pk=request.GET.get('prenda'))
 
         print(prenda)
-    elif request.method == 'POST' and 'btn-arrematar' in request.POST:
-        prenda_id = request.POST.get('prenda_id')
-        prenda = Prenda.objects.get(pk=prenda_id, evento=evento)
-
-        if prenda.arrematada == False:
-            prenda.arrematada = True
-            prenda.save()
-            print("Arrematou!")
-        form = MovimentoForm()
-
 
     else:
         form = MovimentoForm()
     return render(request,'manage_event.html',{'evento':evento,'prenda_selected':prenda, 'form':form})
 
+def arrematar_prenda(request, prenda_id, evento_id):
 
+        prenda = Prenda.objects.get(pk=prenda_id, evento=evento_id)
+
+        if prenda.arrematada == False:
+            prenda.arrematada = True
+            prenda.save()
+            print("Arrematou!")
+
+        return redirect(reverse(viewname='manage-event', kwargs={'evento_id': evento_id}) + "?prenda=%s" % prenda_id)
+
+
+@require_POST
 def undo_arrematador_lance(request,movimento_id):
     movimento=Movimento.objects.get(pk=movimento_id)
     movimento.delete()
