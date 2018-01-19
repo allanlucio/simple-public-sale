@@ -72,6 +72,7 @@ class Prenda(models.Model):
         prenda.doador = self.get_arrematador()
         prenda.parent=self
         prenda.pk=None
+        prenda.arrematada = False
         prenda.save()
         for caracteristica_prenda in self.caracteristicaprenda_set.all():
             new_caracteristica_prenda=copy.copy(caracteristica_prenda)
