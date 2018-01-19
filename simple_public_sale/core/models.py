@@ -85,9 +85,23 @@ class Prenda(models.Model):
             print("oioi")
             return self.movimento_set.all().order_by('-valor').first().arrematador
 
-        raise IntegrityError("Esta prenda ainda nao foi arrematada")
+        return None
+    def get_movimento_arremate(self):
+        if self.arrematada:
+
+            return self.movimento_set.all().order_by('-valor').first()
+
+        return None
     def last_three_movements(self):
         return self.movimento_set.all().order_by("-data_ocorrencia", "-valor")[0:3]
+    def get_doador_primario(self):
+        doador_primario=None
+        prenda = self
+        while(True):
+            if prenda.parent==None:
+                return prenda.doador
+
+            prenda=prenda.parent
 
 class CaracteristicaPrenda(models.Model):
     prenda = models.ForeignKey(Prenda,on_delete=models.CASCADE)

@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 from core.views import send_message
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin', admin.site.urls),
 
     path('', include('core.urls') ),
 
