@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models, IntegrityError
 from django.db.models.signals import pre_save, post_save, post_delete, pre_delete
 from django.dispatch import receiver
@@ -61,12 +62,18 @@ class Prenda(models.Model):
     arrematada = models.BooleanField(default=False)
 
     url_image = models.ImageField(upload_to='prendas/imagens', null=True, blank=True)
-    parent = models.ForeignKey('Prenda', on_delete=models.CASCADE, blank=True, null=True)
+    parent = models.OneToOneField('Prenda', on_delete=models.CASCADE, blank=True, null=True)
     caracteristicas = models.ManyToManyField(Caracteristica,through='CaracteristicaPrenda')
 
     def __str__(self):
         return self.tipo_prenda.nome
+
     def get_prenda_clone(self):
+
+        if not self.arrematada:
+            raise ValidationError("Esta Prenda ainda nao foi arrematada")
+
+
         prenda = copy.copy(self)
         # prenda.pk=None
         prenda.doador = self.get_arrematador()
@@ -79,6 +86,8 @@ class Prenda(models.Model):
             new_caracteristica_prenda.pk=None
             new_caracteristica_prenda.prenda_id=prenda.id
             new_caracteristica_prenda.save()
+
+
 
     def get_arrematador(self):
         if self.arrematada:
@@ -142,6 +151,11 @@ def pre_delete_movimento(sender,instance, **kwargs):
     assert isinstance(instance, Movimento)
     instance.send_to_stream()
 
+# @receiver(pre_save, sender=Prenda)
+# def pre_delete_movimento(sender,instance, **kwargs):
+#     assert isinstance(instance, Prenda)
+#     if instance.parent.is_doada():
+#         raise ValidationError("Esta Prenda ja foi doada anteriormente2")
 @receiver(pre_save, sender=Participante)
 def pre_save_arrematador(sender,instance, **kwargs):
     assert isinstance(instance, Participante)
