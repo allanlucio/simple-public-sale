@@ -89,7 +89,7 @@ def arrematar_prenda(request, prenda_id, evento_id):
         return redirect(reverse(viewname='manage-event', kwargs={'evento_id': evento_id}) + "?prenda=%s" % prenda_id)
 
 
-@require_POST
+
 def undo_arrematador_lance(request,movimento_id):
     movimento=Movimento.objects.get(pk=movimento_id)
     movimento.delete()
@@ -97,12 +97,11 @@ def undo_arrematador_lance(request,movimento_id):
     evento=prenda.evento
     return redirect(reverse(viewname='manage-event',kwargs={'evento_id':evento.pk})+"?prenda=%s"%prenda.pk)
 
-@require_POST
 def donate_prenda(request,prenda_id):
     prenda=Prenda.objects.get(pk=prenda_id)
 
     prenda.get_prenda_clone()
-
+    evento = prenda.evento
     print('oi')
 
     return redirect(reverse(viewname='manage-event', kwargs={'evento_id': evento.pk}) + "?prenda=%s" % prenda.pk)

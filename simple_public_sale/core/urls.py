@@ -26,5 +26,7 @@ urlpatterns = [
     re_path('gerenciar/evento/(?P<evento_id>.+)', manage_event, name='manage-event'),
     re_path('gerenciar/desfazer/movimento/(?P<movimento_id>.+)', undo_arrematador_lance, name='undo-movement-prenda'),
     re_path('gerenciar/arrematar/prenda/(?P<prenda_id>.+)/(?P<evento_id>.+)', arrematar_prenda, name='arrematar-prenda'),
+    re_path('gerenciar/doar/prenda/(?P<prenda_id>.+)', donate_prenda,
+            name='donate-prenda'),
 
 ]
