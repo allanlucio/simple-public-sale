@@ -86,7 +86,7 @@ class Prenda(models.Model):
 
         raise IntegrityError("Esta prenda ainda nao foi arrematada")
     def last_three_movements(self):
-        return self.movimento_set.all().order_by("-data_ocorrencia")[0:3]
+        return self.movimento_set.all().order_by("-data_ocorrencia", "-valor")[0:3]
 
 class CaracteristicaPrenda(models.Model):
     prenda = models.ForeignKey(Prenda,on_delete=models.CASCADE)

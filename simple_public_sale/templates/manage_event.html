@@ -5,7 +5,7 @@
         <br>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{% url 'list-all-events' %}">Events</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'list-all-events' %}">Eventos</a></li>
                 <li class="breadcrumb-item active">{{ evento.nome }}</li>
             </ol>
         </nav>
@@ -25,7 +25,8 @@
                                 </a>
                             </h5>
 
-                            <h6 class="float-right text-primary">Valor Inicial: R$ {{ prenda.valor_inicial }}</h6>
+                            <h6 class="float-right text-primary">Valor Inicial: R$ {{ prenda.valor_inicial }} {% if prenda.arrematada == True and prenda.parent == None %} <a href="{% url 'donate-prenda' prenda_id=prenda.id %}" class="btn btn-primary float-right"><i
+                                                                class="material-icons"></i>Doar</a> {% endif %} </h6>
                         </div>
 
                         {% if prenda.arrematada == False %}
@@ -40,7 +41,7 @@
                                     <div class="row">
 
                                         <div class="col-8">
-                                            <h4>Adicione um novo lance</h4>
+                                            <h4>Adicione um novo lance:</h4>
                                             <div class="md-form">
                                                 <label for="{{ form.nome_arrematador.id_for_label }}">Arrematador</label>
                                                 {{ form.nome_arrematador }}
@@ -61,20 +62,20 @@
                                             <input type="hidden" name="prenda_id" value="{{ prenda.pk }}">
                                             <input type="hidden" name="group_id" value="{{ evento.grupo_id }}">
 
-                                            <button type="submit" class="btn btn-primary" name="btn-enviar">Enviar</button><a href="{% url 'arrematar-prenda'  prenda_id=1 evento_id=1 %}" class="btn btn-danger float-right"><i
+                                            <button type="submit" class="btn btn-primary" name="btn-enviar">Enviar</button><a href="{% url 'arrematar-prenda'  prenda_id=prenda.pk evento_id=evento.id %}" class="btn btn-danger float-right"><i
                                                                 class="material-icons"></i>Arrematar</a>
 
                                         </div>
 
                                         <div class="col-4">
-                                            <h5>Últimos três lances</h5>
+                                            <h5>Últimos três lances:</h5>
                                             <ul class="list-group">
                                                 {% for move in prenda.last_three_movements %}
                                                     <li class="list-group-item">
                                                         {{ move.arrematador.nome.capitalize }} (
                                                         <span class="text-primary">{{ move.valor }}</span> )
 
-                                                        <a href="" class="btn-sm btn-danger float-right"><i
+                                                        <a href="{% url 'undo-movement-prenda' movimento_id=move.id %}" class="btn-sm btn-danger float-right"><i
                                                                 class="material-icons">undo</i></a>
                                                     </li>
                                                 {% endfor %}
