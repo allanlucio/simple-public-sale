@@ -9,8 +9,8 @@
                         <img class="img-fluid" src="{{ evento.url_image }}" alt="card-image">
 
                         <div class="card-body">
-                            <h5 class="card-title"> {{ evento.nome_evento.capitalize }} </h5>
-                            <h6 class="card-subtitle mb-2 text-muted"> {{ evento.data_evento | date:'d/m/Y' }}</h6>
+                            <h5 class="card-title"> {{ evento.nome.capitalize }} </h5>
+                            <h6 class="card-subtitle mb-2 text-muted"> {{ evento.data | date:'d/m/Y' }}</h6>
                             <a class="card-link" href="{% url 'watch-event' evento.grupo.id %}">Assistir</a>
                             <a class="card-link" href="{% url 'manage-event' evento.id %}">Gerenciar</a>
                         </div>
