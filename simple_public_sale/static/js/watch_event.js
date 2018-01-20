@@ -8,21 +8,6 @@ $(document).ready(function () {
     $("#gift-container").hide();
     $(".carousel").carousel();
 });
-//100000.05
-function format_price(value){
-    var value = value.toString();
-    var len = value.length;
-
-
-    if(len <= 3){
-        return "R$ " + value;
-    }
-    if(value.charAt(len-3) === "."){
-        return format_price(value.substr(0,len-3)).concat(",").concat(value.substr(len-2,3));
-    }
-    return format_price(value.substr(0,len-3)).concat(".").concat(value.substr(len-3,3));
-
-}
 
 function start_event(json) {
     $("#waiting").hide();
@@ -35,7 +20,9 @@ function start_event(json) {
     tipo_prenda = $.parseJSON(json.prenda_tipo);
 
     console.log(arrematador);
+    console.log("Movimentos: ")
     console.log(movimentos);
+    console.log("prenda")
     console.log(prenda[0]);
     console.log(tipo_prenda);
 
@@ -52,6 +39,7 @@ function set_gift_attributes(gift, gift_type) {
     $("#gift-img").attr("src", "/" + gift.fields.url_image);
     $("#gift-title").text(gift_type.fields.nome);
 
+    console.log("OBJETO QUE CHEGOU:" + gift.fields.valor_inicial)
     set_last_move_values("Valor inicial",gift.fields.valor_inicial);
 
     att1 = $("#attribute-1");
@@ -63,14 +51,14 @@ function set_movements_values(movements, bidder){
     if(!movements.length){
         console.log("Nenhum movimento feito.");
     }else{
-        set_last_move_values(bidder.fields.nome_arrematador,movements[0].fields.valor_arremate);
+        set_last_move_values(movements[0].fields.arrematador,movements[0].fields.valor);
         if(movements.length > 1){
             $("#move-2").removeClass("invisible");
-            set_move_values("#move-2", "lance-2",movements[1].fields.valor_arremate);
+            set_move_values("#move-2", movements[1].fields.arrematador,movements[1].fields.valor);
         }
         if(movements.length > 2){
             $("#move-2").clone().attr("id","move-3").appendTo("#moves-container");
-            set_move_values("#move-3","lance-3", movements[2].fields.valor_arremate);
+            set_move_values("#move-3",movements[2].fields.arrematador, movements[2].fields.valor);
         }
     }
 
@@ -78,13 +66,16 @@ function set_movements_values(movements, bidder){
 
 function set_last_move_values(name, value){
     last_move = $("#last-move");
-    last_move.find("h1").text(format_price(parseFloat(value).toFixed(2)));
+    num = Number(value);
+    console.log("num"+num);
+    last_move.find("h1").text(num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }));
     last_move.find("h2").text(name);
 }
 
 function set_move_values(id, name, value){
     last_move = $(id);
+    num = Number(value);
     last_move.find("h2").text(name);
-    last_move.find("h3").text(format_price(parseFloat(value).toFixed(2)));
+    last_move.find("h3").text(num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }));
 }
 
