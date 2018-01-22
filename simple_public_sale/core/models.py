@@ -123,7 +123,7 @@ def post_save_movimento(sender,instance, **kwargs):
     instance.send_to_stream()
 
 
-@receiver(pre_delete, sender=Movimento)
+@receiver(post_delete, sender=Movimento)
 def pre_delete_movimento(sender,instance, **kwargs):
     assert isinstance(instance, Movimento)
     instance.send_to_stream()
