@@ -90,9 +90,10 @@ class Prenda(models.Model):
 
 
     def get_arrematador(self):
-        if self.arrematada:
+        movimentos=self.movimento_set.all()
+        if self.arrematada and movimentos :
             print("oioi")
-            return self.movimento_set.all().order_by('-valor').first().arrematador
+            return movimentos.order_by('-valor').first().arrematador
 
         return None
     def get_movimento_arremate(self):
