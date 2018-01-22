@@ -34,6 +34,12 @@ def watch_event(request,group_id):
     grupo=GrupoEvento.objects.get(pk=group_id)
     return render(request,'watch_event.html',{'grupo':grupo})
 
+def list_gift_finishers(request,evento_id):
+    evento = Evento.objects.get(pk=evento_id)
+    prendas= evento.prenda_set.all()
+
+    return render(request,'list_gift_finishers.html',{'evento':evento,'prendas':prendas})
+
 def manage_event(request,evento_id):
     evento = Evento.objects.get(pk=evento_id)
     prenda = None
