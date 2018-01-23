@@ -64,10 +64,9 @@ class Prenda(models.Model):
     url_image = models.ImageField(upload_to='prendas/imagens', null=True, blank=True)
     parent = models.OneToOneField('Prenda', on_delete=models.CASCADE, blank=True, null=True)
     caracteristicas = models.ManyToManyField(Caracteristica,through='CaracteristicaPrenda')
-
     def __str__(self):
         return self.tipo_prenda.nome
-
+    
     def get_prenda_clone(self):
 
         if not self.arrematada:

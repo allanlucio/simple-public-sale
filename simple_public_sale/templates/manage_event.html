@@ -36,7 +36,7 @@
                                 {% endif %} </h6>
                         </div>
 
-                        {% if prenda.arrematada == False %}
+
 
                         <div id="id_prenda_{{ forloop.counter }}" class="collapse" role="tabpanel"
                              aria-labelledby="headingOne"
@@ -68,9 +68,17 @@
                                             </div>
                                             <input type="hidden" name="prenda_id" value="{{ prenda.pk }}">
                                             <input type="hidden" name="group_id" value="{{ evento.grupo_id }}">
+                                            <button type="submit" class="btn btn-primary" name="btn-enviar">Enviar</button>
 
-                                            <button type="submit" class="btn btn-primary" name="btn-enviar">Enviar</button><a href="{% url 'arrematar-prenda'  prenda_id=prenda.pk evento_id=evento.id %}" class="btn btn-danger float-right"><i
+                                            {% if prenda.arrematada %}
+                                                <a href="{% url 'desfaz-arrematar-prenda'  prenda_id=prenda.pk evento_id=evento.id %}" class="btn btn-warning float-right"><i
+                                                                class="material-icons"></i>Desfazer Arremate</a>
+                                            {% else %}
+                                                <a href="{% url 'arrematar-prenda'  prenda_id=prenda.pk evento_id=evento.id %}" class="btn btn-danger float-right"><i
                                                                 class="material-icons"></i>Arrematar</a>
+                                            {% endif %}
+
+
 
                                         </div>
 
@@ -97,7 +105,7 @@
 
                             </div>
                         </div>
-                        {% endif %}
+
                     </div>
 
 
