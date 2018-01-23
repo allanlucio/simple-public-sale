@@ -145,9 +145,14 @@ def post_save_movimento(sender,instance, **kwargs):
 
     instance.send_to_stream()
 
-
 @receiver(post_delete, sender=Movimento)
 def pre_delete_movimento(sender,instance, **kwargs):
+    assert isinstance(instance, Movimento)
+    if instance.prenda.arrematada:
+        raise ValidationError("Não é possível remover lances de uma prenda arrematada.")
+
+@receiver(post_delete, sender=Movimento)
+def post_delete_movimento(sender,instance, **kwargs):
     assert isinstance(instance, Movimento)
     instance.send_to_stream()
 
@@ -166,3 +171,21 @@ def pre_save_caracteristica_prenda(sender,instance, **kwargs):
     assert isinstance(instance, CaracteristicaPrenda)
     if(instance.prenda.caracteristicaprenda_set.count()>=3):
         raise IntegrityError("Cada prenda tem um limite de 3 caracteristicas.")
+
+@receiver(pre_save, sender=Prenda)
+def pre_save_prenda(sender,instance, **kwargs):
+    assert isinstance(instance, Prenda)
+    if instance.parent:
+        if not instance.parent.arrematada:
+            raise ValidationError("Uma prenda doada precisa vir de outra arrematada.")
+
+
+    if not instance.arrematada and Prenda.objects.filter(parent=instance) and instance.pk:
+
+        raise ValidationError("Esta prenda foi doada, para desfazer o arremate é necessário primeiro desfazer a doação.")
+
+    if instance.arrematada and not instance.movimento_set.all():
+        raise ValidationError(
+            "Esta prenda não possui nenhum lance.")
+
+    instance.movimento_set.first().send_to_stream()
