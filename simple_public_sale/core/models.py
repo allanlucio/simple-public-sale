@@ -111,7 +111,15 @@ class Prenda(models.Model):
                 return prenda.doador
 
             prenda=prenda.parent
+    def get_caracteristicas_json(self):
+        caracteristicas=[]
+        for caracteristica in self.caracteristicaprenda_set.all():
+            valor=caracteristica.valor
+            chave = caracteristica.caracteristica.caracteristica
+            caracteristica = {"caracteristica":chave,"valor":valor}
+            caracteristicas.append(caracteristica)
 
+        return caracteristicas
 class CaracteristicaPrenda(models.Model):
     prenda = models.ForeignKey(Prenda,on_delete=models.CASCADE)
     caracteristica = models.ForeignKey(Caracteristica,on_delete=models.CASCADE)
