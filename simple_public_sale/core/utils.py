@@ -22,12 +22,17 @@ def send_to_evento(prenda):
 def get_data_stream_view(prenda):
     movimentos=prenda.movimento_set.all().order_by('-valor')
     # movimentos=Movimento.objects.filter(prenda_fk__evento_fk=evento).order_by('-valor_arremate')
+    if movimentos:
+        movimento_atual=movimentos.first()
+        arrematador = movimento_atual.arrematador
+        arrematador_atual_serialized = serializers.serialize('json', [arrematador])
+    else:
+        movimento_atual = []
+        arrematador_atual_serialized=""
 
-    movimento_atual=movimentos.first()
-    prenda = movimento_atual.prenda
 
     movimentos_serialized=serializers.serialize('json',movimentos,use_natural_foreign_keys=True, use_natural_primary_keys=True)
-    arrematador_atual_serialized=serializers.serialize('json',[movimento_atual.arrematador])
+
 
 
     prenda_serialized=serializers.serialize('json', [prenda])
