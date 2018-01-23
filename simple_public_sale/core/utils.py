@@ -37,6 +37,7 @@ def get_data_stream_view(prenda):
 
     prenda_serialized=serializers.serialize('json', [prenda])
     prenda_tipo_serialized=serializers.serialize('json', [prenda.tipo_prenda])
+
     print(movimentos_serialized)
     print(prenda_serialized)
     print(prenda_tipo_serialized)
@@ -46,7 +47,8 @@ def get_data_stream_view(prenda):
         'movimentos': movimentos_serialized,
         'prenda': prenda_serialized,
         'prenda_tipo':prenda_tipo_serialized,
-        'group_id': '%s' % prenda.evento.grupo_id
+        'group_id': '%s' % prenda.evento.grupo_id,
+        "caracteristicas": json.dumps(prenda.get_caracteristicas_json())
     }
 
     return data
