@@ -95,6 +95,10 @@ class Prenda(models.Model):
             return movimentos.order_by('-valor').first().arrematador
 
         return None
+
+    def is_doada(self):
+        return Prenda.objects.filter(parent=self).count()
+
     def get_movimento_arremate(self):
         if self.arrematada:
 
@@ -196,4 +200,6 @@ def pre_save_prenda(sender,instance, **kwargs):
         raise ValidationError(
             "Esta prenda não possui nenhum lance.")
 
-    instance.movimento_set.first().send_to_stream()
+    if instance.movimento_set.all():
+
+        instance.movimento_set.first().send_to_stream()

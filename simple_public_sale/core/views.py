@@ -105,12 +105,22 @@ def undo_arrematar_prenda(request, prenda_id, evento_id):
 
     return redirect(reverse(viewname='manage-event', kwargs={'evento_id': evento_id}) + "?prenda=%s" % prenda_id)
 
+def undo_donation(request, prenda_id, evento_id):
+    prenda = Prenda.objects.get(parent=prenda_id, evento=evento_id)
+    parent = prenda.parent
+    prenda.delete()
+
+
+    return redirect(reverse(viewname='manage-event', kwargs={'evento_id': evento_id}) + "?prenda=%s" % parent.pk)
+
 def undo_arrematador_lance(request,movimento_id):
     movimento=Movimento.objects.get(pk=movimento_id)
     movimento.delete()
     prenda=movimento.prenda
     evento=prenda.evento
     return redirect(reverse(viewname='manage-event',kwargs={'evento_id':evento.pk})+"?prenda=%s"%prenda.pk)
+
+
 
 def donate_prenda(request,prenda_id):
     prenda=Prenda.objects.get(pk=prenda_id)
