@@ -47,18 +47,26 @@ function set_gift_attributes(gift, gift_type) {
     att1.find("td").text(gift_type.fields.descricao);
 }
 
-function set_movements_values(movements, bidder){
-    if(!movements.length){
-        console.log("Nenhum movimento feito.");
-    }else{
+function set_movements_values(movements){
+    console.log("Num movimentos:", movements.length);
+
+
+    if(movements.length <= 1){
+        $("#move-2").hide();
+        $("#move-3").hide();
+    }
+
+    if(movements.length >= 1){
         set_last_move_values(movements[0].fields.arrematador,movements[0].fields.valor);
         if(movements.length > 1){
-            $("#move-2").removeClass("invisible");
+            $("#move-2").show();
             set_move_values("#move-2", movements[1].fields.arrematador,movements[1].fields.valor);
         }
         if(movements.length > 2){
-            $("#move-2").clone().attr("id","move-3").appendTo("#moves-container");
+            $("#move-3").show();
             set_move_values("#move-3",movements[2].fields.arrematador, movements[2].fields.valor);
+        }else{
+            $("#move-3").hide();
         }
     }
 
@@ -67,7 +75,6 @@ function set_movements_values(movements, bidder){
 function set_last_move_values(name, value){
     last_move = $("#last-move");
     num = Number(value);
-    console.log("num"+num);
     last_move.find("h1").text(num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }));
     last_move.find("h2").text(name);
 }
