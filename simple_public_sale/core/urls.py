@@ -21,7 +21,7 @@ from core.views import *
 
 urlpatterns = [
 
-    path('', list_all_events, name='list-all-events')
+    path('', list_all_events, name='list-all-events'),
     re_path('assistir/evento/(?P<group_id>.+)', watch_event, name='watch-event'),
     re_path('gerenciar/evento/(?P<evento_id>[0-9]+)', manage_event, name='manage-event'),
     re_path('gerenciar/arrematadores/(?P<evento_id>[0-9]+)', list_gift_finishers, name='event-finishers'),
