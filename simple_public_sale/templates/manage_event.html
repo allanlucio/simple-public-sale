@@ -25,8 +25,15 @@
                                 </a>
                             </h5>
 
-                            <h6 class="float-right text-primary">Valor Inicial: R$ {{ prenda.valor_inicial }} {% if prenda.arrematada == True and prenda.parent == None %} <a href="{% url 'donate-prenda' prenda_id=prenda.id %}" class="btn btn-primary float-right"><i
-                                                                class="material-icons"></i>Doar</a> {% endif %} </h6>
+                            <h6 class="float-right text-primary">
+                                Valor Inicial:
+                                <span class="monetary-value">{{ prenda.valor_inicial }}</span>
+                                {% if prenda.arrematada == True and prenda.parent == None %}
+                                    <a href="{% url 'donate-prenda' prenda_id=prenda.id %}" class="btn btn-primary float-right">
+                                        <i class="material-icons"></i>
+                                        Doar
+                                    </a>
+                                {% endif %} </h6>
                         </div>
 
                         {% if prenda.arrematada == False %}
@@ -73,7 +80,7 @@
                                                 {% for move in prenda.last_three_movements %}
                                                     <li class="list-group-item">
                                                         {{ move.arrematador.nome.capitalize }} (
-                                                        <span class="text-primary">{{ move.valor }}</span> )
+                                                        <span class="text-primary monetary-value">{{ move.valor }}</span> )
 
                                                         <a href="{% url 'undo-movement-prenda' movimento_id=move.id %}" class="btn-sm btn-danger float-right"><i
                                                                 class="material-icons">undo</i></a>
@@ -101,5 +108,14 @@
         </div>
 
     </div>
+    <script>
+        $(document).ready(function () {
 
+            $(".monetary-value").each(function () {
+                console.log($(this).text());
+                num = Number($(this).text());
+                $(this).text(num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }));
+            })
+        })
+    </script>
 {% endblock %}
