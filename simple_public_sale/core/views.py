@@ -95,6 +95,15 @@ def arrematar_prenda(request, prenda_id, evento_id):
         return redirect(reverse(viewname='manage-event', kwargs={'evento_id': evento_id}) + "?prenda=%s" % prenda_id)
 
 
+def undo_arrematar_prenda(request, prenda_id, evento_id):
+    prenda = Prenda.objects.get(pk=prenda_id, evento=evento_id)
+
+    if prenda.arrematada == True:
+        prenda.arrematada = False
+        prenda.save()
+        print("Retirada do arremate da prenda")
+
+    return redirect(reverse(viewname='manage-event', kwargs={'evento_id': evento_id}) + "?prenda=%s" % prenda_id)
 
 def undo_arrematador_lance(request,movimento_id):
     movimento=Movimento.objects.get(pk=movimento_id)
