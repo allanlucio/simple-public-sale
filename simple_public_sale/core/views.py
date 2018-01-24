@@ -10,6 +10,7 @@ from django.urls import reverse
 from django.views.decorators.http import require_POST
 
 from channels_core.models import GrupoEvento
+from core.decorators import exceptions_to_messages
 from core.models import Evento, Prenda, Participante, Movimento
 from core.utils import get_data_stream_view, send_to_evento
 
@@ -82,7 +83,7 @@ def manage_event(request,evento_id):
     else:
         form = MovimentoForm()
     return render(request,'manage_event.html',{'evento':evento,'prenda_selected':prenda, 'form':form})
-
+@exceptions_to_messages
 def arrematar_prenda(request, prenda_id, evento_id):
 
         prenda = Prenda.objects.get(pk=prenda_id, evento=evento_id)
@@ -94,7 +95,7 @@ def arrematar_prenda(request, prenda_id, evento_id):
 
         return redirect(reverse(viewname='manage-event', kwargs={'evento_id': evento_id}) + "?prenda=%s" % prenda_id)
 
-
+@exceptions_to_messages
 def undo_arrematar_prenda(request, prenda_id, evento_id):
     prenda = Prenda.objects.get(pk=prenda_id, evento=evento_id)
 
@@ -105,6 +106,7 @@ def undo_arrematar_prenda(request, prenda_id, evento_id):
 
     return redirect(reverse(viewname='manage-event', kwargs={'evento_id': evento_id}) + "?prenda=%s" % prenda_id)
 
+@exceptions_to_messages
 def undo_donation(request, prenda_id, evento_id):
     prenda = Prenda.objects.get(parent=prenda_id, evento=evento_id)
     parent = prenda.parent
@@ -113,6 +115,7 @@ def undo_donation(request, prenda_id, evento_id):
 
     return redirect(reverse(viewname='manage-event', kwargs={'evento_id': evento_id}) + "?prenda=%s" % parent.pk)
 
+@exceptions_to_messages
 def undo_arrematador_lance(request,movimento_id):
     movimento=Movimento.objects.get(pk=movimento_id)
     movimento.delete()
@@ -121,7 +124,7 @@ def undo_arrematador_lance(request,movimento_id):
     return redirect(reverse(viewname='manage-event',kwargs={'evento_id':evento.pk})+"?prenda=%s"%prenda.pk)
 
 
-
+@exceptions_to_messages
 def donate_prenda(request,prenda_id):
     prenda=Prenda.objects.get(pk=prenda_id)
 
