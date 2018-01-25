@@ -18,18 +18,21 @@ function start_event(json) {
     movimentos = $.parseJSON(json.movimentos);
     prenda = $.parseJSON(json.prenda);
     tipo_prenda = $.parseJSON(json.prenda_tipo);
+    caracteristicas = $.parseJSON(json.caracteristicas)
 
     console.log(arrematador);
     console.log("Movimentos: ")
     console.log(movimentos);
     console.log("prenda")
     console.log(prenda[0]);
+    console.log("caracteristicas");
+    console.log(caracteristicas);
     console.log(tipo_prenda);
 
 
     set_gift_attributes(prenda[0], tipo_prenda[0]);
     set_movements_values(movimentos, arrematador[0]);
-
+    set_attributes(caracteristicas);
 
     gifts = $.parseJSON(json.prenda.toString());
 
@@ -70,6 +73,18 @@ function set_movements_values(movements){
         }
     }
 
+}
+
+function set_attributes(attributes){
+    for(var i=0; i<attributes.length; i++){
+
+        if(i!==0){
+            $("#attribute-0").clone().attr("id","attribute-"+i).appendTo("#table-attributes");
+        }
+        var id = "#attribute-"+i;
+        $(id + " th").text(attributes[i].caracteristica);
+        $(id + " td").text(attributes[i].valor);
+    }
 }
 
 function set_last_move_values(name, value){
