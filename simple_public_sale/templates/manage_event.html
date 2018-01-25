@@ -2,6 +2,7 @@
 {% block content %}
 
 
+
     <div class="container">
         <br>
         <nav aria-label="breadcrumb">
@@ -28,7 +29,7 @@
                             </a>
                         </h5>
 
-                        {% if prenda.arrematada == False %}
+                        {% if prenda.arrematador == False %}
                             <span class="badge green float-right mr-2">Aberto </span>
                         {% else %}
                             <span class="badge black float-right mr-2">Arrematada </span>
@@ -50,7 +51,7 @@
                             </a>
                         {% endif %}
 
-                        {% if prenda.arrematada == True %}
+                        {% if prenda.arrematador == True %}
                             {% if prenda.is_doada == False %}
                                 <a href="{% url 'donate-prenda' prenda_id=prenda.id %}"
                                    class="btn btn-warning float-right btn-sm">
@@ -82,13 +83,31 @@
                                         <h4>Adicione um novo lance</h4>
                                         <div class="md-form">
                                             <label for="{{ form.nome_arrematador.id_for_label }}">Arrematador</label>
-                                            {{ form.nome_arrematador }}
+{#                                            {{ form.nome_arrematador }}#}
+                                            <input type="text" name="nome_arrematador" id="autocomplete"/>
                                         </div>
                                         <div class="md-form">
                                             {% if form.errors %}
                                                 {% for valor_arremate in form %}
                                                     {% for error in valor_arremate.errors %}
-                                                        <script>alert('{{ error }}');</script>
+                                                        <script>
+                                                            $.confirm({
+                                                                title: 'Aviso!',
+                                                                content: '{{ error }}',
+                                                                type: 'red',
+                                                                typeAnimated: true,
+                                                                buttons: {
+                                                                    tryAgain: {
+                                                                        text: 'Prosseguir',
+                                                                        btnClass: 'btn-green',
+                                                                        action: function(){
+                                                                        }
+                                                                    },
+
+                                                                }
+                                                            });
+                                                        </script>
+
                                                     {% endfor %}
                                                 {% endfor %}
 
@@ -101,7 +120,7 @@
                                         <input type="hidden" name="group_id" value="{{ evento.grupo_id }}">
                                         <button type="submit" class="btn btn-primary" name="btn-enviar">Enviar</button>
 
-                                        {% if prenda.arrematada %}
+                                        {% if prenda.arrematador %}
                                             <a href="{% url 'desfaz-arrematar-prenda'  prenda_id=prenda.pk evento_id=evento.id %}"
                                                class="btn btn-warning float-right"><i
                                                     class="material-icons"></i>Desfazer Arremate</a>
@@ -150,6 +169,12 @@
     </div>
     <script>
         $(document).ready(function () {
+            $('#autocomplete').autocomplete({
+                serviceUrl: '/todos/participantes',
+                onSelect: function (suggestion) {
+                    {#alert('You selected: ' + suggestion.value + ', ' + suggestion.data);#}
+                }
+            });
 
             $(".monetary-value").each(function () {
                 console.log($(this).text());
