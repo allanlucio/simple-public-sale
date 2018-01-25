@@ -1,0 +1,165 @@
+{% include 'base.html' %}
+
+{% block content %}
+    <style>
+
+        .form-control {
+            padding: 0;
+        }
+
+    </style>
+
+
+
+        <form method="get" class="form-inline">
+
+
+            <div class="col-md-6 offset-2">
+                <div class="md-form">
+                    <i class="fa fa-envelope prefix grey-text"></i>
+                    <input type="text" name="apelido" id="autocomplete"/>
+                    <label for="autocomplete">Arrematador</label>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <input type="submit" value="Filtrar" class="btn btn-success">
+            </div>
+
+
+        </form>
+
+
+
+
+
+
+    <div class="container mt-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'list-all-events' %}">Eventos</a></li>
+                <li class="breadcrumb-item active">{{ evento.nome }}</li>
+            </ol>
+            <ol>
+
+                Total a pagar: <label class="badge green monetary-value">{{ total_pagar }}</label>
+            </ol>
+
+
+
+        </nav>
+
+        <div class="row mt-3">
+            <table id="example" class="table table-striped table-bordered table-responsive-md" cellspacing="0"
+                   width="100%">
+                <thead>
+                <tr>
+                    <th>Prenda</th>
+                    <th>Doador primário</th>
+                    <th>Doador</th>
+                    <th>Arrematador</th>
+                    <th>Status</th>
+                    <th>Valor</th>
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                    <th>Prenda</th>
+                    <th>Doador primário</th>
+                    <th>Doador</th>
+                    <th>Arrematador</th>
+                    <th>Status</th>
+                    <th>Valor</th>
+                </tr>
+                </tfoot>
+                <tbody>
+
+
+                {% for prenda in prendas %}
+                    <tr>
+                        <td>{{ prenda.tipo_prenda.nome }}</td>
+                        <td>{{ prenda.get_doador_primario }}</td>
+                        <td>{{ prenda.doador }}</td>
+                        <td>{{ prenda.get_arrematador.apelido }}</td>
+                        <td>{% if prenda.is_doada %} Prenda doada {% else %} Receber prenda {% endif %}</td>
+                        <td class="monetary-value">{{ prenda.get_movimento_arremate.valor }}</td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+            </table>
+
+
+        </div>
+    </div>
+
+
+
+    <script>
+        $(document).ready(function () {
+            $('#example').DataTable({
+                "language": {
+                    "sEmptyTable":
+                        "Nenhum registro encontrado",
+                    "sInfo":
+                        "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                    "sInfoEmpty":
+                        "Mostrando 0 até 0 de 0 registros",
+                    "sInfoFiltered":
+                        "(Filtrados de _MAX_ registros)",
+                    "sInfoPostFix":
+                        "",
+                    "sInfoThousands":
+                        ".",
+                    "sLengthMenu":
+                        "_MENU_ resultados por página",
+                    "sLoadingRecords":
+                        "Carregando...",
+                    "sProcessing":
+                        "Processando...",
+                    "sZeroRecords":
+                        "Nenhum registro encontrado",
+                    "sSearch":
+                        "Pesquisar",
+                    "oPaginate":
+                        {
+                            "sNext":
+                                "Próximo",
+                            "sPrevious":
+                                "Anterior",
+                            "sFirst":
+                                "Primeiro",
+                            "sLast":
+                                "Último"
+                        }
+                    ,
+                    "oAria":
+                        {
+                            "sSortAscending":
+                                ": Ordenar colunas de forma ascendente",
+                            "sSortDescending":
+                                ": Ordenar colunas de forma descendente"
+                        }
+                }
+            });
+        });
+
+
+        $(document).ready(function () {
+            $('#autocomplete').autocomplete({
+                serviceUrl: '/todos/participantes',
+                onSelect: function (suggestion) {
+                    {#alert('You selected: ' + suggestion.value + ', ' + suggestion.data);#}
+                }
+            });
+
+            $(".monetary-value").each(function () {
+                console.log($(this).text());
+                num = Number($(this).text());
+                $(this).text(num.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'}));
+            })
+        })
+
+    </script>
+{% endblock %}

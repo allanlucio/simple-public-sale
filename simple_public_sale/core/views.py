@@ -42,6 +42,17 @@ def list_gift_finishers(request,evento_id):
 
     return render(request,'list_gift_finishers.html',{'evento':evento,'prendas':prendas})
 
+def finisher_summary(request,evento_id):
+    evento = Evento.objects.get(pk=evento_id)
+    apelido=request.GET.get("apelido")
+    if apelido:
+        participante=Participante.objects.get(apelido=apelido)
+        prendas=Prenda.objects.filter(arrematador__apelido=apelido,evento=evento)
+        print(prendas)
+        return render(request,'finisher_summary.html',{'evento':evento,'prendas':prendas,'participante':participante,'total_pagar':participante.total_pagar_evento(evento_id)})
+    return render(request, 'finisher_summary.html', {'evento': evento, 'prendas': []})
+
+
 @exceptions_to_messages
 def manage_event(request,evento_id):
     evento = Evento.objects.get(pk=evento_id)
@@ -90,8 +101,8 @@ def arrematar_prenda(request, prenda_id, evento_id):
 
         prenda = Prenda.objects.get(pk=prenda_id, evento=evento_id)
 
-        if prenda.arrematada == False:
-            prenda.arrematada = True
+        if not prenda.arrematador:
+            prenda.arrematador = prenda.get_arrematador_atual()
             prenda.save()
             print("Arrematou!")
 
@@ -101,8 +112,8 @@ def arrematar_prenda(request, prenda_id, evento_id):
 def undo_arrematar_prenda(request, prenda_id, evento_id):
     prenda = Prenda.objects.get(pk=prenda_id, evento=evento_id)
 
-    if prenda.arrematada == True:
-        prenda.arrematada = False
+    if prenda.arrematador:
+        prenda.arrematador = None
         prenda.save()
         print("Retirada do arremate da prenda")
 
@@ -145,7 +156,7 @@ def get_participante_names(request):
         participantes=Participante.objects.filter(apelido__contains=apelido)
         print(participantes)
         data={"suggestions":[{"data":participante.apelido,"value":participante.apelido} for participante in participantes]}
-        print(data)
+        # print(data)
         data_json=json.dumps(data)
         return JsonResponse(data,safe=False)
     return HttpResponse("Envie o apelido para continuar com a busca")

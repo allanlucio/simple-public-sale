@@ -30,7 +30,13 @@ class Participante(models.Model):
 
     def natural_key(self):
         return (self.apelido)
-
+    def total_pagar_evento(self,evento_id):
+        prendas=Prenda.objects.filter(arrematador=self,evento__pk=evento_id)
+        total=0
+        for prenda in prendas:
+            total=prenda.get_movimento_arremate().valor
+        print(total)
+        return total
 class Evento(models.Model):
     nome = models.CharField(max_length=100)
     data = models.DateTimeField(null=True,blank=True)
@@ -59,8 +65,8 @@ class Prenda(models.Model):
     valor_inicial = models.DecimalField(decimal_places=2, max_digits=8)
     tipo_prenda = models.ForeignKey(TipoPrenda, on_delete=models.CASCADE)
     evento = models.ForeignKey(Evento, on_delete=models.CASCADE)
-    arrematada = models.BooleanField(default=False)
-
+    # arrematada = models.BooleanField(default=False)
+    arrematador = models.ForeignKey(Participante,on_delete=models.CASCADE,related_name="arrematador",null=True,blank=True,default=True)
     url_image = models.ImageField(upload_to='prendas/imagens', null=True, blank=True)
     parent = models.OneToOneField('Prenda', on_delete=models.CASCADE, blank=True, null=True)
     caracteristicas = models.ManyToManyField(Caracteristica,through='CaracteristicaPrenda')
@@ -69,7 +75,7 @@ class Prenda(models.Model):
     
     def get_prenda_clone(self):
 
-        if not self.arrematada:
+        if not self.arrematador:
             raise ValidationError("Esta Prenda ainda nao foi arrematada")
 
 
@@ -78,7 +84,7 @@ class Prenda(models.Model):
         prenda.doador = self.get_arrematador()
         prenda.parent=self
         prenda.pk=None
-        prenda.arrematada = False
+        prenda.arrematador = None
         prenda.save()
         for caracteristica_prenda in self.caracteristicaprenda_set.all():
             new_caracteristica_prenda=copy.copy(caracteristica_prenda)
@@ -90,17 +96,23 @@ class Prenda(models.Model):
 
     def get_arrematador(self):
         movimentos=self.movimento_set.all()
-        if self.arrematada and movimentos :
+        if self.arrematador and movimentos:
             print("oioi")
             return movimentos.order_by('-valor').first().arrematador
 
         return None
+    def get_arrematador_atual(self):
+        movimentos=self.movimento_set.all()
+        if movimentos:
+            print("oioi")
+            return movimentos.order_by('-valor').first().arrematador
 
+        return None
     def is_doada(self):
         return Prenda.objects.filter(parent=self).count()
 
     def get_movimento_arremate(self):
-        if self.arrematada:
+        if self.arrematador:
 
             return self.movimento_set.all().order_by('-valor').first()
 
@@ -154,7 +166,7 @@ class Movimento(models.Model):
 def pre_save_movimento(sender,instance, **kwargs):
     assert isinstance(instance, Movimento)
 
-    if instance.prenda.arrematada:
+    if instance.prenda.arrematador:
         raise ValidationError("Não é possível enviar mais lances, esta prenda já foi arrematada.")
 
     if instance.prenda.get_movimento_arremate().valor >= instance.valor:
@@ -169,7 +181,7 @@ def post_save_movimento(sender,instance, **kwargs):
 @receiver(post_delete, sender=Movimento)
 def pre_delete_movimento(sender,instance, **kwargs):
     assert isinstance(instance, Movimento)
-    if instance.prenda.arrematada:
+    if instance.prenda.arrematador:
         raise ValidationError("Não é possível remover lances de uma prenda arrematada.")
 
 @receiver(post_delete, sender=Movimento)
@@ -197,15 +209,15 @@ def pre_save_caracteristica_prenda(sender,instance, **kwargs):
 def pre_save_prenda(sender,instance, **kwargs):
     assert isinstance(instance, Prenda)
     if instance.parent:
-        if not instance.parent.arrematada:
+        if not instance.parent.arrematador:
             raise ValidationError("Uma prenda doada precisa vir de outra arrematada.")
 
 
-    if not instance.arrematada and Prenda.objects.filter(parent=instance) and instance.pk:
+    if not instance.arrematador and Prenda.objects.filter(parent=instance) and instance.pk:
 
         raise ValidationError("Esta prenda foi doada, para desfazer o arremate é necessário primeiro desfazer a doação.")
 
-    if instance.arrematada and not instance.movimento_set.all():
+    if instance.arrematador and not instance.movimento_set.all():
         raise ValidationError(
             "Esta prenda não possui nenhum lance.")
 

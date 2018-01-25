@@ -29,7 +29,7 @@
                             </a>
                         </h5>
 
-                        {% if prenda.arrematada == False %}
+                        {% if prenda.arrematador == False %}
                             <span class="badge green float-right mr-2">Aberto </span>
                         {% else %}
                             <span class="badge black float-right mr-2">Arrematada </span>
@@ -51,7 +51,7 @@
                             </a>
                         {% endif %}
 
-                        {% if prenda.arrematada == True %}
+                        {% if prenda.arrematador == True %}
                             {% if prenda.is_doada == False %}
                                 <a href="{% url 'donate-prenda' prenda_id=prenda.id %}"
                                    class="btn btn-warning float-right btn-sm">
@@ -120,7 +120,7 @@
                                         <input type="hidden" name="group_id" value="{{ evento.grupo_id }}">
                                         <button type="submit" class="btn btn-primary" name="btn-enviar">Enviar</button>
 
-                                        {% if prenda.arrematada %}
+                                        {% if prenda.arrematador %}
                                             <a href="{% url 'desfaz-arrematar-prenda'  prenda_id=prenda.pk evento_id=evento.id %}"
                                                class="btn btn-warning float-right"><i
                                                     class="material-icons"></i>Desfazer Arremate</a>

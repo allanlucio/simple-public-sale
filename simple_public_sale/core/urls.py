@@ -26,6 +26,7 @@ urlpatterns = [
     path('todos/participantes', get_participante_names, name='todos-participantes'),
     re_path('gerenciar/evento/(?P<evento_id>[0-9]+)', manage_event, name='manage-event'),
     re_path('gerenciar/arrematadores/(?P<evento_id>[0-9]+)', list_gift_finishers, name='event-finishers'),
+    re_path('gerenciar/arrematador/resumo/(?P<evento_id>[0-9]+)', finisher_summary, name='finisher-summary'),
     re_path('gerenciar/desfazer/movimento/(?P<movimento_id>.+)', undo_arrematador_lance, name='undo-movement-prenda'),
     re_path('gerenciar/arrematar/prenda/(?P<prenda_id>[0-9]+)/(?P<evento_id>[0-9]+)', arrematar_prenda, name='arrematar-prenda'),
     re_path('gerenciar/prenda/desfazer/arremate/(?P<prenda_id>[0-9]+)/(?P<evento_id>[0-9]+)', undo_arrematar_prenda, name='desfaz-arrematar-prenda'),
