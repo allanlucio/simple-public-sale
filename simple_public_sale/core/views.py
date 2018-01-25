@@ -41,6 +41,7 @@ def list_gift_finishers(request,evento_id):
 
     return render(request,'list_gift_finishers.html',{'evento':evento,'prendas':prendas})
 
+@exceptions_to_messages
 def manage_event(request,evento_id):
     evento = Evento.objects.get(pk=evento_id)
     prenda = None

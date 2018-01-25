@@ -150,6 +150,12 @@ class Movimento(models.Model):
             print("Stream Offline")
         return False
 
+@receiver(pre_save, sender=Movimento)
+def pre_save_movimento(sender,instance, **kwargs):
+    assert isinstance(instance, Movimento)
+
+    if instance.prenda.arrematada:
+        raise ValidationError("Não é possível enviar mais lances, esta prenda já foi arrematada.")
 
 @receiver(post_save, sender=Movimento)
 def post_save_movimento(sender,instance, **kwargs):
