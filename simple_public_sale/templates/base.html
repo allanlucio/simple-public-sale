@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/mdb.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/jquery-confirm.min.css' %}">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css"/>
 
 
@@ -29,7 +30,45 @@
     <script src="{% static 'js/popper.js' %}"></script>
     <script src="{% static 'js/bootstrap.min.js' %}"></script>
     <script src="{% static 'js/mdb.min.js' %}"></script>
+    <script src="{% static 'js/jquery-confirm.min.js' %}"></script>
     <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+
+     {% for message in messages %}
+        <script>
+        var tipo = "{{ message.tags }}";
+        var type = "green";
+        switch (tipo){
+            case "error":
+                type="red";
+                break;
+            case "success":
+                type="green";
+                break;
+            case "warning":
+                type="orange";
+                break;
+            case "info":
+                type="blue";
+                break;
+        }
+        $.confirm({
+            title: 'Aviso!',
+            content: '{{ message }}',
+            type: 'red',
+            typeAnimated: true,
+            buttons: {
+                tryAgain: {
+                    text: 'Prosseguir',
+                    btnClass: 'btn-green',
+                    action: function(){
+                    }
+                },
+
+            }
+        });
+
+        </script>
+    {% endfor %}
 </body>
 </html>
