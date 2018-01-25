@@ -22,18 +22,20 @@
                 <thead>
                 <tr>
                     <th>Prenda</th>
-                    <th>Doador primario</th>
+                    <th>Doador primário</th>
                     <th>Doador</th>
                     <th>Arrematador</th>
+                    <th>Status</th>
                     <th>Valor</th>
                 </tr>
                 </thead>
                 <tfoot>
                 <tr>
                     <th>Prenda</th>
-                    <th>Doador primario</th>
+                    <th>Doador primário</th>
                     <th>Doador</th>
                     <th>Arrematador</th>
+                    <th>Status</th>
                     <th>Valor</th>
                 </tr>
                 </tfoot>
@@ -46,6 +48,7 @@
                         <td>{{ prenda.get_doador_primario }}</td>
                         <td>{{ prenda.doador }}</td>
                         <td>{{ prenda.get_arrematador.apelido }}</td>
+                        <td>{% if prenda.is_doada %} Prenda doada {% else %} Receber prenda {% endif %}</td>
                         <td>R${{ prenda.get_movimento_arremate.valor }}</td>
 
                     </tr>
