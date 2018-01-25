@@ -157,6 +157,9 @@ def pre_save_movimento(sender,instance, **kwargs):
     if instance.prenda.arrematada:
         raise ValidationError("Não é possível enviar mais lances, esta prenda já foi arrematada.")
 
+    if instance.prenda.get_movimento_arremate().valor >= instance.valor:
+        raise ValidationError("Este lance é menor que o maior lance atual!")
+
 @receiver(post_save, sender=Movimento)
 def post_save_movimento(sender,instance, **kwargs):
     assert isinstance(instance, Movimento)

@@ -3,6 +3,7 @@ from decimal import Decimal
 from django.core import serializers
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 import json
 # Create your views here.
@@ -134,3 +135,17 @@ def donate_prenda(request,prenda_id):
     print('oi')
 
     return redirect(reverse(viewname='manage-event', kwargs={'evento_id': evento.pk}) + "?prenda=%s" % prenda.pk)
+
+def get_participante_names(request):
+    apelido=request.GET.get("query")
+    print(request.GET)
+    if apelido:
+        apelido=apelido.upper()
+
+        participantes=Participante.objects.filter(apelido__contains=apelido)
+        print(participantes)
+        data={"suggestions":[{"data":participante.apelido,"value":participante.apelido} for participante in participantes]}
+        print(data)
+        data_json=json.dumps(data)
+        return JsonResponse(data,safe=False)
+    return HttpResponse("Envie o apelido para continuar com a busca")
