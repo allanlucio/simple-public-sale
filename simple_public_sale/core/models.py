@@ -1,7 +1,9 @@
 from django.core.exceptions import ValidationError
 from django.db import models, IntegrityError
+from django.db.models import Max
 from django.db.models.signals import pre_save, post_save, post_delete, pre_delete
 from django.dispatch import receiver
+from twisted.protocols.amp import Decimal
 
 from channels_core.models import GrupoEvento
 from core.utils import send_to_evento
@@ -117,6 +119,12 @@ class Prenda(models.Model):
             return self.movimento_set.all().order_by('-valor').first()
 
         return None
+    def get_maior_movimento(self):
+        movimentos=self.movimento_set.all()
+        if movimentos:
+
+            return movimentos.order_by('-valor').first()
+        return None
     def last_three_movements(self):
         return self.movimento_set.all().order_by("-data_ocorrencia", "-valor")[0:3]
     def get_doador_primario(self):
@@ -169,7 +177,8 @@ def pre_save_movimento(sender,instance, **kwargs):
     if instance.prenda.arrematador:
         raise ValidationError("Não é possível enviar mais lances, esta prenda já foi arrematada.")
 
-    if instance.prenda.get_movimento_arremate().valor >= instance.valor:
+    maior_movimento= instance.prenda.get_maior_movimento()
+    if maior_movimento and float(instance.valor) <= float(maior_movimento.valor):
         raise ValidationError("Este lance é menor que o maior lance atual!")
 
 @receiver(post_save, sender=Movimento)
