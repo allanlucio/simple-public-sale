@@ -3,6 +3,7 @@ from decimal import Decimal
 from django.core import serializers
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
+from django.db import transaction
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 import json
@@ -54,6 +55,7 @@ def finisher_summary(request,evento_id):
 
 
 @exceptions_to_messages
+@transaction.atomic()
 def manage_event(request,evento_id):
     evento = Evento.objects.get(pk=evento_id)
     prenda = None
@@ -87,14 +89,18 @@ def manage_event(request,evento_id):
 
             # a=Channel('send-to-group').send({'message': data},immediately=True)
 
-        elif request.method == 'GET':
 
-            prenda = Prenda.objects.get(pk=request.GET.get('prenda'))
 
-        print(prenda)
+
+
+
 
     else:
         form = MovimentoForm()
+        prenda_id=request.GET.get('prenda')
+        if prenda_id:
+            prenda = Prenda.objects.get(pk=request.GET.get('prenda'))
+            print(prenda)
     return render(request,'manage_event.html',{'evento':evento,'prenda_selected':prenda, 'form':form})
 @exceptions_to_messages
 def arrematar_prenda(request, prenda_id, evento_id):
@@ -103,6 +109,7 @@ def arrematar_prenda(request, prenda_id, evento_id):
 
         if not prenda.arrematador:
             prenda.arrematador = prenda.get_arrematador_atual()
+            print(prenda.arrematador)
             prenda.save()
             print("Arrematou!")
 
@@ -146,6 +153,15 @@ def donate_prenda(request,prenda_id):
     print('oi')
 
     return redirect(reverse(viewname='manage-event', kwargs={'evento_id': evento.pk}) + "?prenda=%s" % prenda.pk)
+
+@require_POST
+def focus_prenda(request,evento_id):
+    prenda_id=request.POST.get('prenda_id')
+    prenda=Prenda.objects.get(pk=prenda_id)
+    if prenda.evento.is_online():
+        send_to_evento(prenda=prenda)
+
+    return redirect(reverse(viewname='manage-event', kwargs={'evento_id': evento_id}) + "?prenda=%s" % prenda.pk)
 
 def get_participante_names(request):
     apelido=request.GET.get("query")

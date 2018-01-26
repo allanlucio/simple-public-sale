@@ -33,5 +33,7 @@ urlpatterns = [
     re_path('gerenciar/prenda/desfazer/doacao/(?P<prenda_id>[0-9]+)/(?P<evento_id>[0-9]+)', undo_donation, name='undo-donation'),
     re_path('gerenciar/doar/prenda/(?P<prenda_id>[0-9]+)', donate_prenda,
             name='donate-prenda'),
+    re_path('gerenciar/focar/prenda/(?P<evento_id>[0-9]+)', focus_prenda,
+            name='focus_prenda'),
 
 ]
