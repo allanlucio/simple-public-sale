@@ -3,6 +3,7 @@ from decimal import Decimal
 from django.core import serializers
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
+from django.db import transaction
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
 import json
@@ -54,6 +55,7 @@ def finisher_summary(request,evento_id):
 
 
 @exceptions_to_messages
+@transaction.atomic()
 def manage_event(request,evento_id):
     evento = Evento.objects.get(pk=evento_id)
     prenda = None
