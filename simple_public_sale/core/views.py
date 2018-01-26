@@ -89,14 +89,18 @@ def manage_event(request,evento_id):
 
             # a=Channel('send-to-group').send({'message': data},immediately=True)
 
-        elif request.method == 'GET':
 
-            prenda = Prenda.objects.get(pk=request.GET.get('prenda'))
 
-        print(prenda)
+
+
+
 
     else:
         form = MovimentoForm()
+        prenda_id=request.GET.get('prenda')
+        if prenda_id:
+            prenda = Prenda.objects.get(pk=request.GET.get('prenda'))
+            print(prenda)
     return render(request,'manage_event.html',{'evento':evento,'prenda_selected':prenda, 'form':form})
 @exceptions_to_messages
 def arrematar_prenda(request, prenda_id, evento_id):
