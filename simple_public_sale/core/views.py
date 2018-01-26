@@ -154,6 +154,15 @@ def donate_prenda(request,prenda_id):
 
     return redirect(reverse(viewname='manage-event', kwargs={'evento_id': evento.pk}) + "?prenda=%s" % prenda.pk)
 
+@require_POST
+def focus_prenda(request,evento_id):
+    prenda_id=request.POST.get('prenda_id')
+    prenda=Prenda.objects.get(pk=prenda_id)
+    if prenda.evento.is_online():
+        send_to_evento(prenda=prenda)
+
+    return redirect(reverse(viewname='manage-event', kwargs={'evento_id': evento_id}) + "?prenda=%s" % prenda.pk)
+
 def get_participante_names(request):
     apelido=request.GET.get("query")
     print(request.GET)
