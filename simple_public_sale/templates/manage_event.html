@@ -30,10 +30,14 @@
                             </a>
                         </h5>
 
-                        {% if prenda.arrematador == None %}
-                            <span class="badge green float-right mr-2">Aberto </span>
-                        {% else %}
+                        {% if prenda.arrematador %}
                             <span class="badge black float-right mr-2">Arrematada </span>
+
+
+                        {% elif prenda.get_arrematador_atual %}
+                                <span class="badge green float-right mr-2">Em andamento </span>
+                        {% else %}
+                                <span class="badge grey float-right mr-2">Na fila</span>
                         {% endif %}
 
 
@@ -179,7 +183,7 @@
     {{ prenda_selected }}
     <script>
         $(document).ready(function () {
-            $(window).scrollTo('#id_prenda_23',100);
+            $(window).scrollTo('#id_prenda_23',200);
 
 
             $('.autocomplete-input').autocomplete({
@@ -191,7 +195,7 @@
 
             $(".monetary-value").each(function () {
                 console.log($(this).text());
-                num = Number($(this).text());
+                var num = Number($(this).text());
                 $(this).text(num.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'}));
             })
         })
