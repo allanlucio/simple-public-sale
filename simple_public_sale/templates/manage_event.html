@@ -29,7 +29,7 @@
                             </a>
                         </h5>
 
-                        {% if prenda.arrematador == False %}
+                        {% if prenda.arrematador == None %}
                             <span class="badge green float-right mr-2">Aberto </span>
                         {% else %}
                             <span class="badge black float-right mr-2">Arrematada </span>
@@ -51,7 +51,7 @@
                             </a>
                         {% endif %}
 
-                        {% if prenda.arrematador == True %}
+                        {% if prenda.arrematador != None %}
                             {% if prenda.is_doada == False %}
                                 <a href="{% url 'donate-prenda' prenda_id=prenda.id %}"
                                    class="btn btn-warning float-right btn-sm">
@@ -80,7 +80,7 @@
                                 <div class="row">
 
                                     <div class="col-8">
-                                        <h4>Adicione um novo lance</h4>
+                                        <h4>Adicione um novo lance:</h4>
                                         <div class="md-form">
                                             <label for="{{ form.nome_arrematador.id_for_label }}">Arrematador</label>
 {#                                            {{ form.nome_arrematador }}#}
@@ -101,6 +101,9 @@
                                                                         text: 'Prosseguir',
                                                                         btnClass: 'btn-green',
                                                                         action: function(){
+                                                                            $('.collapse').collapse("show");
+                                                                            $('#id_valor_arremate').val("");
+                                                                            $('#id_valor_arremate').focus();
                                                                         }
                                                                     },
 
@@ -118,7 +121,7 @@
                                         </div>
                                         <input type="hidden" name="prenda_id" value="{{ prenda.pk }}">
                                         <input type="hidden" name="group_id" value="{{ evento.grupo_id }}">
-                                        <button type="submit" class="btn btn-primary" name="btn-enviar">Enviar</button>
+                                        <button type="submit" class="btn btn-primary" name="btn-enviar" {% if prenda.is_doada or prenda.arrematador != None %} disabled {% endif %}>Enviar Lance</button>
 
                                         {% if prenda.arrematador %}
                                             <a href="{% url 'desfaz-arrematar-prenda'  prenda_id=prenda.pk evento_id=evento.id %}"
@@ -138,12 +141,17 @@
                                         <ul class="list-group">
                                             {% for move in prenda.last_three_movements %}
                                                 <li class="list-group-item">
-                                                    {{ move.arrematador.nome.capitalize }} (
+                                                    {{ move.arrematador }} (
                                                     <span class="text-primary monetary-value">{{ move.valor }}</span> )
-
-                                                    <a href="{% url 'undo-movement-prenda' movimento_id=move.id %}"
-                                                       class="btn-sm btn-danger float-right"><i
-                                                            class="material-icons">undo</i></a>
+                                                    {% if prenda.is_doada or prenda.arrematador != None %}
+                                                        <a href="#"
+                                                           class="btn-sm btn-danger float-right disabled" ><i
+                                                                class="material-icons">undo</i></a>
+                                                    {% else %}
+                                                        <a href="{% url 'undo-movement-prenda' movimento_id=move.id %}"
+                                                           class="btn-sm btn-danger float-right" ><i
+                                                                class="material-icons">undo</i></a>
+                                                    {% endif %}
                                                 </li>
                                             {% endfor %}
                                         </ul>

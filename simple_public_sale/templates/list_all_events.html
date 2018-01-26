@@ -1,31 +1,34 @@
 {% extends 'base.html' %}
 {% block content %}
     <div class="container mt-4">
+        {% if eventos %}
+            <div class="row">
+                {% for evento in eventos %}
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-3">
+                        <div class="card mt-3">
+                            <img class="img-fluid" src="{{ evento.url_image }}" alt="card-image">
 
-        <div class="row">
-            {% for evento in eventos %}
-                <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-3">
-                    <div class="card mt-3">
-                        <img class="img-fluid" src="{{ evento.url_image }}" alt="card-image">
-
-                        <div class="card-body">
-                            <h5 class="card-title"> {{ evento.nome.capitalize }} </h5>
-                            <h6 class="card-subtitle mb-2 text-muted"> {{ evento.data | date:'d/m/Y' }}</h6>
+                            <div class="card-body">
+                                <h5 class="card-title"> {{ evento.nome.capitalize }} </h5>
+                                <h6 class="card-subtitle mb-2 text-muted"> {{ evento.data | date:'d/m/Y' }}</h6>
 
 
-                            <a class="card-link" href="{% url 'watch-event' evento.grupo.id %}"> <i class="material-icons">remove_red_eye</i></a>
-                            <a class="card-link float-right" href="{% url 'manage-event' evento.id %}"> <i class="material-icons">settings</i></a>
-                            <a class="card-link" href="{% url 'event-finishers' evento.id %}"> <i class="material-icons">view_list</i></a>
+                                <a class="card-link" href="{% url 'watch-event' evento.grupo.id %}"> <i class="material-icons">remove_red_eye</i></a>
+                                <a class="card-link float-right" href="{% url 'manage-event' evento.id %}"> <i class="material-icons">settings</i></a>
+                                <a class="card-link" href="{% url 'event-finishers' evento.id %}"> <i class="material-icons">view_list</i></a>
+                            </div>
                         </div>
+
                     </div>
 
-                </div>
 
+                {% endfor %}
+            </div>
 
-            {% endfor %}
         </div>
-
-    </div>
+    {% else %}
+            <h4 style="text-align: center"><b>Não existem eventos cadastrados.</b></h4>
+    {% endif %}
 
 
 
