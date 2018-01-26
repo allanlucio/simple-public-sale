@@ -176,6 +176,19 @@ class Movimento(models.Model):
             print("Stream Offline")
         return False
 
+@receiver(pre_save, sender=Evento)
+def post_save_evento(sender,instance, **kwargs):
+    assert isinstance(instance, Evento)
+    if not instance.grupo:
+        grupo=GrupoEvento()
+        grupo.nome = instance.nome
+        grupo.evento=instance
+        grupo.online=True
+        grupo.save()
+        print(grupo)
+        instance.grupo=grupo
+
+
 @receiver(pre_save, sender=Movimento)
 def pre_save_movimento(sender,instance, **kwargs):
     assert isinstance(instance, Movimento)
