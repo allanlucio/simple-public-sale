@@ -27,7 +27,7 @@
                             <a data-toggle="collapse" href="#id_prenda_{{ prenda.pk }}" role="button"
                                aria-expanded="true"
                                aria-controls="collapseOne">
-                                {{ prenda.tipo_prenda.descricao }}
+                                {{ prenda.tipo_prenda.descricao }} - {{ prenda.doador.apelido }}
                             </a>
                         </h5>
 
@@ -184,7 +184,8 @@
     {{ prenda_selected }}
     <script>
         $(document).ready(function () {
-            $(window).scrollTo('#id_prenda_23',200);
+            $(window).scrollTo('#id_prenda_{{ prenda_selected.pk }}',200);
+
             $('.live-focus').click(function () {
                 var prenda_id = $(this).data('prenda');
                 var data = {prenda_id:prenda_id,csrfmiddlewaretoken: '{{ csrf_token }}'};
