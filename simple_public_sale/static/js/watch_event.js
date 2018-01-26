@@ -34,6 +34,20 @@ function start_event(json) {
     set_movements_values(movimentos, arrematador[0]);
     set_attributes(caracteristicas);
 
+    if (prenda[0].fields.arrematador) {
+        show_modal_sold();
+        setTimeout(function () {
+            hide_modal_sold();
+        }, 5000);
+        $("#sold").show();
+
+
+    }
+    else {
+        $("#sold").hide();
+        hide_modal_sold();
+    }
+
     gifts = $.parseJSON(json.prenda.toString());
 
 }
@@ -43,61 +57,70 @@ function set_gift_attributes(gift, gift_type) {
     $("#gift-title").text(gift_type.fields.nome);
 
     console.log("OBJETO QUE CHEGOU:" + gift.fields.valor_inicial)
-    set_last_move_values("Valor inicial",gift.fields.valor_inicial);
+    set_last_move_values("Valor inicial", gift.fields.valor_inicial);
 
     att1 = $("#attribute-1");
     att1.find("th").text("Descrição");
     att1.find("td").text(gift_type.fields.descricao);
 }
 
-function set_movements_values(movements){
+function set_movements_values(movements) {
     console.log("Num movimentos:", movements.length);
 
 
-    if(movements.length <= 1){
+    if (movements.length <= 1) {
         $("#move-2").hide();
         $("#move-3").hide();
     }
 
-    if(movements.length >= 1){
-        set_last_move_values(movements[0].fields.arrematador,movements[0].fields.valor);
-        if(movements.length > 1){
+    if (movements.length >= 1) {
+        set_last_move_values(movements[0].fields.arrematador, movements[0].fields.valor);
+        if (movements.length > 1) {
             $("#move-2").show();
-            set_move_values("#move-2", movements[1].fields.arrematador,movements[1].fields.valor);
+            set_move_values("#move-2", movements[1].fields.arrematador, movements[1].fields.valor);
         }
-        if(movements.length > 2){
+        if (movements.length > 2) {
             $("#move-3").show();
-            set_move_values("#move-3",movements[2].fields.arrematador, movements[2].fields.valor);
-        }else{
+            set_move_values("#move-3", movements[2].fields.arrematador, movements[2].fields.valor);
+        } else {
             $("#move-3").hide();
         }
     }
 
 }
 
-function set_attributes(attributes){
-    for(var i=0; i<attributes.length; i++){
+function set_attributes(attributes) {
+    for (var i = 0; i < attributes.length; i++) {
 
-        if(i!==0){
-            $("#attribute-0").clone().attr("id","attribute-"+i).appendTo("#table-attributes");
+        if (i !== 0 && $("#attribute-" + i).length == 0) {
+
+            $("#attribute-0").clone().attr("id", "attribute-" + i).appendTo("#table-attributes");
         }
-        var id = "#attribute-"+i;
+        var id = "#attribute-" + i;
         $(id + " th").text(attributes[i].caracteristica);
         $(id + " td").text(attributes[i].valor);
     }
 }
 
-function set_last_move_values(name, value){
+function set_last_move_values(name, value) {
     last_move = $("#last-move");
     num = Number(value);
-    last_move.find("h1").text(num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }));
+    last_move.find("h1").text(num.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'}));
     last_move.find("h2").text(name);
 }
 
-function set_move_values(id, name, value){
+function set_move_values(id, name, value) {
     last_move = $(id);
     num = Number(value);
     last_move.find("h2").text(name);
-    last_move.find("h3").text(num.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }));
+    last_move.find("h3").text(num.toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'}));
+}
+
+function show_modal_sold() {
+    $("#modal-sold").modal('show');
+}
+
+function hide_modal_sold() {
+    $("#modal-sold").modal('hide');
 }
 
