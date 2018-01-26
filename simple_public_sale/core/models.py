@@ -81,13 +81,19 @@ class Prenda(models.Model):
             raise ValidationError("Esta Prenda ainda nao foi arrematada")
 
 
-        prenda = copy.copy(self)
-        # prenda.pk=None
+        prenda = Prenda()
+
+
         prenda.doador = self.get_arrematador()
-        prenda.parent=self
-        prenda.pk=None
+        prenda.valor_inicial = self.valor_inicial
+        prenda.evento = self.evento
+        prenda.tipo_prenda = self.tipo_prenda
+        prenda.url_image = self.url_image
         prenda.arrematador = None
+        prenda.parent=self
         prenda.save()
+
+
         for caracteristica_prenda in self.caracteristicaprenda_set.all():
             new_caracteristica_prenda=copy.copy(caracteristica_prenda)
             new_caracteristica_prenda.pk=None
@@ -218,6 +224,7 @@ def pre_save_caracteristica_prenda(sender,instance, **kwargs):
 def pre_save_prenda(sender,instance, **kwargs):
     assert isinstance(instance, Prenda)
     if instance.parent:
+        print(instance.parent.arrematador)
         if not instance.parent.arrematador:
             raise ValidationError("Uma prenda doada precisa vir de outra arrematada.")
 

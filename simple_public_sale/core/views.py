@@ -103,6 +103,7 @@ def arrematar_prenda(request, prenda_id, evento_id):
 
         if not prenda.arrematador:
             prenda.arrematador = prenda.get_arrematador_atual()
+            print(prenda.arrematador)
             prenda.save()
             print("Arrematou!")
 
