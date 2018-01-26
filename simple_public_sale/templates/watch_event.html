@@ -32,8 +32,18 @@
                 <div id="last-move" class="row mt-3">
                     <div class="card col-md-12 info-color-dark text-light">
                         <div class="card-body">
+
+
                             <h2 class="float-left">Valor inicial</h2>
-                            <h1 class="float-right text-warning font-bold">R$ 999,90</h1>
+
+                            <div class="float-right">
+                                <h1 class="text-warning font-bold">R$ 999,90</h1>
+
+                                <div id="sold" class="badge success-color mr-0" style="font-size: 1.5rem">
+                                    <i class="material-icons" style="font-size: 1rem">done</i>
+                                    Arrematado
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -76,7 +86,7 @@
                     <table id="table-attributes" class="table table-striped">
 
                         <thead class="blue-grey lighten-2 text-light">
-                            <th colspan="2">Características</th>
+                        <th colspan="2">Características</th>
                         </thead>
 
                         <tr id="attribute-0">
@@ -87,13 +97,36 @@
                     </table>
                 </div>
             </div>
-
-
         </div>
-
-
     </div>
 
+    <!-- MODAL -->
+
+    <div class="modal fade" id="modal-sold" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog modal-notify modal-success" role="document">
+            <!--Content-->
+            <div class="modal-content">
+                <!--Header-->
+                <div class="modal-header">
+                    <p class="heading lead">Prenda Arrematada!</p>
+
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true" class="white-text">&times;</span>
+                    </button>
+                </div>
+
+                <!--Body-->
+                <div class="modal-body">
+                    <div class="text-center">
+                        <i class="material-icons green-text" style="font-size: 8rem">done</i>
+                        <p>A prenda acabou de ser arrematada!</p>
+                    </div>
+                </div>
+            </div>
+            <!--/.Content-->
+        </div>
+    </div>
 
 
     <script>
@@ -116,7 +149,7 @@
                 {#socket.send("hello world");#}
                 //setInterval(function () {
                 //    var data = {group_id:group_id,username:username}
-                 //   socket.send(JSON.stringify(data));
+                //   socket.send(JSON.stringify(data));
                 //},500)
             };
             // Call onopen directly if socket is already open
