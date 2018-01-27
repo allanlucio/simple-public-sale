@@ -92,13 +92,15 @@ function set_movements_values(movements) {
 function set_attributes(attributes) {
     for (var i = 0; i < attributes.length; i++) {
 
-        if (i !== 0 && $("#attribute-" + i).length == 0) {
+        // if (i !== 0 && $("#attribute-" + i).length == 0) {
+        //
+        //     $("#attribute-0").clone().attr("id", "attribute-" + i).appendTo("#table-attributes");
+        // }
+        // var id = "#attribute-" + i;
+        // $(id + " th").text(attributes[i].caracteristica);
+        // $(id + " td").text(attributes[i].valor);
 
-            $("#attribute-0").clone().attr("id", "attribute-" + i).appendTo("#table-attributes");
-        }
-        var id = "#attribute-" + i;
-        $(id + " th").text(attributes[i].caracteristica);
-        $(id + " td").text(attributes[i].valor);
+        $('#table-attributes').append('<tr id="attribute-" + i>' + '<th scope="row">' + attributes[i].caracteristica + '</th>' + ' <td>' + attributes[i].valor +'</td>' + '</tr>');
     }
 }
 
