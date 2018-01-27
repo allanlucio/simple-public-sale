@@ -1,4 +1,4 @@
-{% include 'base.html' %}
+{% extends 'base.html' %}
 
 {% block content %}
     <style>
@@ -68,7 +68,11 @@
 
 
 
-    <script>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
         $(document).ready(function () {
             $('#example').DataTable({
                 "language": {

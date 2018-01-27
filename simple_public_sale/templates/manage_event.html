@@ -1,10 +1,10 @@
-{% include 'base.html' %}
+{% extends 'base.html' %}
 {% block content %}
 
 
 
 
-    <div class="container">
+
         <br>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
@@ -153,10 +153,14 @@
 
         </div>
 
-    </div>
 
 
-    <script>
+
+
+{% endblock %}
+
+{% block scripts %}
+<script>
         $(document).ready(function () {
             $(window).scrollTo('#id_prenda_{{ prenda_selected.pk }}',200);
 
@@ -170,7 +174,7 @@
                   success:function (res) {
                       console.log(res);
                   }
-                  
+
                 });
             });
 

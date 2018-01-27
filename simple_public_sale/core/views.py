@@ -1,5 +1,7 @@
 from channels import Channel
 from decimal import Decimal
+
+from django.contrib.auth.decorators import login_required
 from django.core import serializers
 from django.core.cache import cache
 from django.core.exceptions import ValidationError
@@ -18,7 +20,7 @@ from core.utils import get_data_stream_view, send_to_evento
 
 from .forms import MovimentoForm
 
-
+@login_required
 def send_message(request):
     if request.method == 'POST':
 
@@ -27,22 +29,22 @@ def send_message(request):
         a=Channel("chat-messages").send({'message': message},immediately=True)
 
     return render(request,'simple_chat_send.html')
-
+@login_required
 def list_all_events(request):
     eventos=Evento.objects.all()
     return render(request,'list_all_events.html',{'eventos':eventos})
-
+@login_required
 def watch_event(request,group_id):
 
     grupo=GrupoEvento.objects.get(pk=group_id)
     return render(request,'watch_event.html',{'grupo':grupo})
-
+@login_required
 def list_gift_finishers(request,evento_id):
     evento = Evento.objects.get(pk=evento_id)
     prendas= evento.prenda_set.all()
 
     return render(request,'list_gift_finishers.html',{'evento':evento,'prendas':prendas})
-
+@login_required
 def finisher_summary(request,evento_id):
     evento = Evento.objects.get(pk=evento_id)
     apelido=request.GET.get("apelido")
@@ -53,7 +55,7 @@ def finisher_summary(request,evento_id):
         return render(request,'finisher_summary.html',{'evento':evento,'prendas':prendas,'participante':participante,'total_pagar':participante.total_pagar_evento(evento_id)})
     return render(request, 'finisher_summary.html', {'evento': evento, 'prendas': []})
 
-
+@login_required
 @exceptions_to_messages
 @transaction.atomic()
 def manage_event(request,evento_id):
@@ -137,7 +139,7 @@ def undo_donation(request, prenda_id, evento_id):
     prenda.delete()
 
 
-    return redirect(reverse(viewname='manage-event', kwargs={'evento_id': evento_id}) + "?prenda=%s" % parent.pk)
+    return redirect(reverse(viewname='manage-event', kwargs={'evento_id': evento_id}) + "?prenda=%s" % prenda.pk)
 
 @exceptions_to_messages
 def undo_arrematador_lance(request,movimento_id):
@@ -166,7 +168,7 @@ def focus_prenda(request,evento_id):
         send_to_evento(prenda=prenda)
 
     return redirect(reverse(viewname='manage-event', kwargs={'evento_id': evento_id}) + "?prenda=%s" % prenda.pk)
-
+@login_required
 def get_participante_names(request):
     apelido=request.GET.get("query")
     print(request.GET)

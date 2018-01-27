@@ -52,10 +52,28 @@
         <a class="navbar-brand" href="#">Simple Public Sale</a>
     </div>
 </nav>
-
-<div class="container">
+<main>
+    <div class="container">
     {% block content %}{% endblock %}
-</div>
+    </div>
+
+</main>
+<footer class="page-footer blue center-on-small-only">
+
+    <div class="footer-copyright">
+        <div class="container-fluid">
+            Todos os direitos reservados © 2018 Copyright: Allan Lúcio Correia, Eduardo Lúcio Correia e João Paulo
+            Ferreira da Silva
+
+            <div class="float-right">
+                Software open source
+                <a class="ml-2" href="https://github.com/allanufal/simple-public-sale" target="_blank"> <img
+                        src="{% static 'img/github-logo.png' %}" alt="github"></a>
+            </div>
+        </div>
+    </div>
+
+</footer>
 
 
 <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
@@ -65,9 +83,13 @@
 <script src="{% static 'js/mdb.min.js' %}"></script>
 <script src="{% static 'js/jquery-confirm.min.js' %}"></script>
 <script src="{% static 'js/jquery.autocomplete.js' %}"></script>
+<script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'js/dataTables.bootstrap4.min.js' %}"></script>
 
-<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+{% block scripts %}
+{% endblock %}
+{#<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>#}
+{#<script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>#}
 
 {% for message in messages %}
     <script>
@@ -106,22 +128,8 @@
     </script>
 {% endfor %}
 
-<footer class="page-footer blue center-on-small-only" style="position: fixed; bottom: 0; width: 100%; z-index:1300">
 
-    <div class="footer-copyright">
-        <div class="container-fluid">
-            Todos os direitos reservados © 2018 Copyright: Allan Lúcio Correia, Eduardo Lúcio Correia e João Paulo
-            Ferreira da Silva
 
-            <div class="float-right">
-                Software open source
-                <a class="ml-2" href="https://github.com/allanufal/simple-public-sale" target="_blank"> <img
-                        src="{% static 'img/github-logo.png' %}" alt="github"></a>
-            </div>
-        </div>
-    </div>
-
-</footer>
 
 </body>
 </html>
