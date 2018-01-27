@@ -1,3 +1,7 @@
+body{
+    min-height: 700px;
+}
+
 .navbar-header {
     float: left;
     text-align: center;

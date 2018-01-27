@@ -1,4 +1,4 @@
-    <!DOCTYPE html>
+<!DOCTYPE html>
 
 {% load static %}
 
@@ -14,52 +14,77 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css"/>
 
     <style>
-    .autocomplete-suggestions { border: 1px solid #999; background: #FFF; overflow: auto; }
-    .autocomplete-suggestion { padding: 2px 5px; white-space: nowrap; overflow: hidden; }
-    .autocomplete-selected { background: #F0F0F0; }
-    .autocomplete-suggestions strong { font-weight: normal; color: #3399FF; }
-    .autocomplete-group { padding: 2px 5px; }
-    .autocomplete-group strong { display: block; border-bottom: 1px solid #000; }
+        .autocomplete-suggestions {
+            border: 1px solid #999;
+            background: #FFF;
+            overflow: auto;
+        }
+
+        .autocomplete-suggestion {
+            padding: 2px 5px;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .autocomplete-selected {
+            background: #F0F0F0;
+        }
+
+        .autocomplete-suggestions strong {
+            font-weight: normal;
+            color: #3399FF;
+        }
+
+        .autocomplete-group {
+            padding: 2px 5px;
+        }
+
+        .autocomplete-group strong {
+            display: block;
+            border-bottom: 1px solid #000;
+        }
     </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">Simple Public Sale</a>
-        </div>
-    </nav>
-
-    <div class="container">
-        {% block content %}{% endblock %}
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="navbar-header">
+        <a class="navbar-brand" href="#">Simple Public Sale</a>
     </div>
-    <script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
-    <script src="{% static 'js/jquery.scrollTo.min.js' %}"></script>
-    <script src="{% static 'js/popper.js' %}"></script>
-    <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'js/mdb.min.js' %}"></script>
-    <script src="{% static 'js/jquery-confirm.min.js' %}"></script>
-    <script src="{% static 'js/jquery.autocomplete.js' %}"></script>
+</nav>
 
-    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+<div class="container">
+    {% block content %}{% endblock %}
+</div>
 
-     {% for message in messages %}
-        <script>
+
+<script src="{% static 'js/jquery-3.2.1.min.js' %}"></script>
+<script src="{% static 'js/jquery.scrollTo.min.js' %}"></script>
+<script src="{% static 'js/popper.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<script src="{% static 'js/mdb.min.js' %}"></script>
+<script src="{% static 'js/jquery-confirm.min.js' %}"></script>
+<script src="{% static 'js/jquery.autocomplete.js' %}"></script>
+
+<script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.16/js/dataTables.bootstrap4.min.js"></script>
+
+{% for message in messages %}
+    <script>
         var tipo = "{{ message.tags }}";
         var type = "green";
-        switch (tipo){
+        switch (tipo) {
             case "error":
-                type="red";
+                type = "red";
                 break;
             case "success":
-                type="green";
+                type = "green";
                 break;
             case "warning":
-                type="orange";
+                type = "orange";
                 break;
             case "info":
-                type="blue";
+                type = "blue";
                 break;
         }
         $.confirm({
@@ -71,14 +96,32 @@
                 tryAgain: {
                     text: 'Prosseguir',
                     btnClass: 'btn-green',
-                    action: function(){
+                    action: function () {
                     }
                 },
 
             }
         });
 
-        </script>
-    {% endfor %}
+    </script>
+{% endfor %}
+
+<footer class="page-footer blue center-on-small-only" style="position: fixed; bottom: 0; width: 100%; z-index:1300">
+
+    <div class="footer-copyright">
+        <div class="container-fluid">
+            Todos os direitos reservados © 2018 Copyright: Allan Lúcio Correia, Eduardo Lúcio Correia e João Paulo
+            Ferreira da Silva
+
+            <div class="float-right">
+                Software open source
+                <a class="ml-2" href="https://github.com/allanufal/simple-public-sale" target="_blank"> <img
+                        src="{% static 'img/github-logo.png' %}" alt="github"></a>
+            </div>
+        </div>
+    </div>
+
+</footer>
+
 </body>
 </html>
