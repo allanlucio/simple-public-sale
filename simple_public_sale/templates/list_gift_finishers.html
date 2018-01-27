@@ -14,6 +14,12 @@
                 <li class="breadcrumb-item"><a href="{% url 'list-all-events' %}">Eventos</a></li>
                 <li class="breadcrumb-item active">{{ evento.nome }}</li>
             </ol>
+            <ol class="breadcrumb">
+                    <button type="button" class="btn btn-primary" name="btn-imprimir" id="btn-imprimir" onclick="printpage();">Imprimir</button>
+            </ol>
+
+
+
         </nav>
 
         <div class="row mt-3">
@@ -110,5 +116,12 @@
                 }
             });
         });
+            function printpage() {
+
+                var printButton = document.getElementById("btn-imprimir");
+                printButton.style.visibility = 'hidden';
+                window.print();
+                printButton.style.visibility = 'visible';
+            }
     </script>
 {% endblock %}
