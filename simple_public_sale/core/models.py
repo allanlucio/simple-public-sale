@@ -64,16 +64,16 @@ class Caracteristica(models.Model):
 
 class Prenda(models.Model):
     doador = models.ForeignKey(Participante, on_delete=models.CASCADE)
-    valor_inicial = models.DecimalField(decimal_places=2, max_digits=8)
+    valor_inicial = models.DecimalField(decimal_places=2, max_digits=8,default=0)
     tipo_prenda = models.ForeignKey(TipoPrenda, on_delete=models.CASCADE)
     evento = models.ForeignKey(Evento, on_delete=models.CASCADE)
     # arrematada = models.BooleanField(default=False)
     arrematador = models.ForeignKey(Participante,on_delete=models.CASCADE,related_name="arrematador",null=True,blank=True,default=True)
     url_image = models.ImageField(upload_to='prendas/imagens', null=True, blank=True)
-    parent = models.OneToOneField('Prenda', on_delete=models.CASCADE, blank=True, null=True)
+    parent = models.OneToOneField('Prenda', on_delete=models.CASCADE, blank=True, null=True,verbose_name='Doação de')
     caracteristicas = models.ManyToManyField(Caracteristica,through='CaracteristicaPrenda')
     def __str__(self):
-        return self.tipo_prenda.nome
+        return '%s [doado por: %s]'%(self.tipo_prenda.nome,self.doador.apelido)
     
     def get_prenda_clone(self):
 

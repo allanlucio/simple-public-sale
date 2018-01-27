@@ -89,7 +89,11 @@ def manage_event(request,evento_id):
 
             # a=Channel('send-to-group').send({'message': data},immediately=True)
 
-
+        else:
+            print(form.errors)
+            prenda_id = request.POST.get('prenda')
+            if prenda_id:
+                prenda = Prenda.objects.get(pk=request.GET.get('prenda'))
 
 
 
