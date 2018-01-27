@@ -139,7 +139,7 @@ def undo_donation(request, prenda_id, evento_id):
     prenda.delete()
 
 
-    return redirect(reverse(viewname='manage-event', kwargs={'evento_id': evento_id}) + "?prenda=%s" % prenda.pk)
+    return redirect(reverse(viewname='manage-event', kwargs={'evento_id': evento_id}) + "?prenda=%s" % parent.pk)
 
 @exceptions_to_messages
 def undo_arrematador_lance(request,movimento_id):
