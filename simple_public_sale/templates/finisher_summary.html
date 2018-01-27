@@ -41,7 +41,7 @@
             </ol>
             <ol>
 
-                Total a pagar: <label class="badge green monetary-value">{{ total_pagar }}</label>
+
             </ol>
 
 
@@ -53,10 +53,18 @@
                    width="100%">
                 <thead>
                 <tr>
+                    <td colspan="6"><h3>Arremates de: <span class="badge blue">{{ participante.apelido }}</span> </h3></td>
+
+
+
+
+                    </tr>
+                <tr>
                     <th>Prenda</th>
+                    <th>Arrematador</th>
                     <th>Doador primário</th>
                     <th>Doador</th>
-                    <th>Arrematador</th>
+
                     <th>Status</th>
                     <th>Valor</th>
                 </tr>
@@ -64,12 +72,19 @@
                 <tfoot>
                 <tr>
                     <th>Prenda</th>
+                    <th>Arrematador</th>
                     <th>Doador primário</th>
                     <th>Doador</th>
-                    <th>Arrematador</th>
+
                     <th>Status</th>
                     <th>Valor</th>
                 </tr>
+                <tr>
+                    <td colspan="5"><h3>Total a pagar</h3></td>
+
+                        <td class=""><h2 class=""><label class="badge red monetary-value">{{ total_pagar }}</label></h2></td>
+
+                    </tr>
                 </tfoot>
                 <tbody>
 
@@ -77,15 +92,17 @@
                 {% for prenda in prendas %}
                     <tr>
                         <td>{{ prenda.tipo_prenda.nome }}</td>
+                        <td><b>{{ prenda.get_arrematador.apelido }}</b></td>
                         <td>{{ prenda.get_doador_primario }}</td>
                         <td>{{ prenda.doador }}</td>
-                        <td>{{ prenda.get_arrematador.apelido }}</td>
+
                         <td>{% if prenda.is_doada %} Prenda doada {% else %} Receber prenda {% endif %}</td>
                         <td class="monetary-value">{{ prenda.get_movimento_arremate.valor }}</td>
 
                     </tr>
 
                 {% endfor %}
+
 
                 </tbody>
             </table>

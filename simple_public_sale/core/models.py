@@ -36,7 +36,7 @@ class Participante(models.Model):
         prendas=Prenda.objects.filter(arrematador=self,evento__pk=evento_id)
         total=0
         for prenda in prendas:
-            total=prenda.get_movimento_arremate().valor
+            total+=prenda.get_movimento_arremate().valor
         print(total)
         return total
 class Evento(models.Model):
