@@ -51,7 +51,7 @@ def finisher_summary(request,evento_id):
     if apelido:
         participante=Participante.objects.get(apelido=apelido)
         prendas=Prenda.objects.filter(arrematador__apelido=apelido,evento=evento)
-        print(prendas)
+
         return render(request,'finisher_summary.html',{'evento':evento,'prendas':prendas,'participante':participante,'total_pagar':participante.total_pagar_evento(evento_id)})
     return render(request, 'finisher_summary.html', {'evento': evento, 'prendas': []})
 
@@ -154,11 +154,11 @@ def undo_arrematador_lance(request,movimento_id):
 def donate_prenda(request,prenda_id):
     prenda=Prenda.objects.get(pk=prenda_id)
 
-    prenda.get_prenda_clone()
+    prenda_nova=prenda.get_prenda_clone()
     evento = prenda.evento
-    print('oi')
 
-    return redirect(reverse(viewname='manage-event', kwargs={'evento_id': evento.pk}) + "?prenda=%s" % prenda.pk)
+
+    return redirect(reverse(viewname='manage-event', kwargs={'evento_id': evento.pk}) + "?prenda=%s" % prenda_nova.pk)
 
 @require_POST
 def focus_prenda(request,evento_id):
@@ -171,12 +171,12 @@ def focus_prenda(request,evento_id):
 @login_required
 def get_participante_names(request):
     apelido=request.GET.get("query")
-    print(request.GET)
+
     if apelido:
         apelido=apelido.upper()
 
         participantes=Participante.objects.filter(apelido__contains=apelido)
-        print(participantes)
+
         data={"suggestions":[{"data":participante.apelido,"value":participante.apelido} for participante in participantes]}
         # print(data)
         data_json=json.dumps(data)

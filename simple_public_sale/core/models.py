@@ -100,7 +100,7 @@ class Prenda(models.Model):
             new_caracteristica_prenda.prenda_id=prenda.id
             new_caracteristica_prenda.save()
 
-
+        return prenda
 
     def get_arrematador(self):
         movimentos=self.movimento_set.all()
